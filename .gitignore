@@ -1,0 +1,37 @@
+# Internal files
+.svn
+projects/*/*.lib
+zos/devices
+projects/*/resources/wks/
+
+# Compiled Object files
+*.o
+*.obj
+*.lst
+*.map
+
+# CCStudio project files
+*.wks
+*.paf2
+*.sbl
+*.log
+*.lkf
+*.CS_
+DebugSios
+DebugBpo
+DebugTpo
+Debug
+Release
+
+# Eclipse project files
+.settings/
+
+# Keil project files
+*.lnp
+*.m51
+*.plg
+*.uvopt
+*.localadmin
+*.bak
+*.iex
+*.__i
