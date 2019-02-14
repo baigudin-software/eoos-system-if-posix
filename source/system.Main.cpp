@@ -9,10 +9,9 @@
 
 /**
  * Executes a user application main process.
- *
- * @param args - an application arguments.
  */
-int main(void* const args)
+int main()
 {
-    return 0;
+    ::local::system::System eoos;
+    return eoos.execute();
 }

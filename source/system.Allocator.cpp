@@ -25,7 +25,7 @@ namespace local
         /**
          * Frees an allocated memory.
          *
-         * @param ptr - address of allocated memory block or a null pointer.
+         * @param ptr address of allocated memory block or a null pointer.
          */      
         void Allocator::free(void* const ptr)
         {
