@@ -93,7 +93,7 @@ namespace local
                 if( not Self::isConstructed() ) return;
                 if(millis == 0)
                 {
-                    int32 micros = nanos / 1000;            
+                    // int32 micros = nanos / 1000;
                     // The sleep_u OS call does not cause switching threads
                     // and uses all system time quant. Therefore, use the call
                     // only for nanosecond requests

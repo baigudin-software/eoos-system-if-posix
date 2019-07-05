@@ -1,6 +1,6 @@
-/** 
+/**
  * The operating system class.
- * 
+ *
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2014-2018, Embedded Team, Sergey Baigudin
  * @license   http://embedded.team/license/
@@ -22,42 +22,42 @@ namespace local
     {
         class System : public system::Object, public api::System
         {
-            typedef system::System Self;    
-            typedef system::Object Parent;    
-        
+            typedef system::System Self;
+            typedef system::Object Parent;
+
         public:
-        
-            /** 
+
+            /**
              * Constructor.
-             */    
+             */
             System();
-            
-            /** 
+
+            /**
              * Destructor.
              */
             virtual ~System();
-            
+
             /**
              * Tests if this object has been constructed.
              *
              * @return true if object has been constructed successfully.
-             */    
+             */
             virtual bool isConstructed() const;
-            
+
             /**
              * Returns running time of the operating system in nanoseconds.
              *
              * @return time in nanoseconds.
              */
             virtual int64 getTime() const;
-            
+
             /**
              * Returns the operating system heap memory.
              *
              * @return the heap memory.
              */
             virtual api::Heap& getHeap() const;
-            
+
             /**
              * Returns the system runtime environment.
              *
@@ -107,22 +107,22 @@ namespace local
             /**
              * Terminates the operating system execution.
              */
-            virtual void terminate() const;                   
-            
+            virtual void terminate() const;
+
             /**
              * Executes the operating system.
              *
              * @return zero, or error code if the execution has been terminated.
              */
-            int32 execute();        
-        
-            /** 
+            int32 execute();
+
+            /**
              * Returns the operating system syscall interface.
              *
              * @return the operating system syscall interface.
-             */      
+             */
             static api::System& call();
-            
+
             /**
              * Terminates the operating system execution.
              *
@@ -131,12 +131,12 @@ namespace local
             static void terminate(Error error);
 
         private:
-        
+
             /**
              * Constructs this object.
              *
-             * @return true if object has been constructed successfully.     
-             */    
+             * @return true if object has been constructed successfully.
+             */
             bool construct();
 
             /**
@@ -158,24 +158,24 @@ namespace local
                 }
                 return res;
             }
-            
+
             /**
              * Copy constructor.
              *
              * @param obj a reference to source object.
              */
             System(const System& obj);
-        
+
             /**
              * Assignment operator.
              *
              * @param obj a reference to source object.
-             * @return reference to this object.     
+             * @return reference to this object.
              */
-            System& operator =(const System& obj);        
-        
+            System& operator =(const System& obj);
+
             /**
-             * The operatin system interface.
+             * The operating system interface.
              */
             static api::System* system_;
 
@@ -198,7 +198,7 @@ namespace local
              * The operating system scheduler.
              */
             mutable system::Scheduler scheduler_;
-        
+
         };
     }
 }
