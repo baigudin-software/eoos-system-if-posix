@@ -1,11 +1,11 @@
 /**
  * Thread tasks scheduler.
- * 
+ *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2017, Embedded Team, Sergey Baigudin
+ * @copyright 2016-2017, Sergey Baigudin, Baigudin Software
  * @license   http://embedded.team/license/
  */
-#include "system.Scheduler.hpp" 
+#include "system.Scheduler.hpp"
 #include "system.SchedulerThread.hpp"
 #include "system.System.hpp"
 #include "system.Interrupt.hpp"
@@ -14,7 +14,7 @@ namespace local
 {
     namespace system
     {
-        /** 
+        /**
          * Constructor.
          */
         Scheduler::Scheduler() : Parent(),
@@ -22,24 +22,24 @@ namespace local
             threads_       (NULL){
             setConstructed( construct() );
         }
-      
-        /** 
+
+        /**
          * Destructor.
          */
         Scheduler::~Scheduler()
         {
         }
-        
+
         /**
          * Tests if this object has been constructed.
          *
          * @return true if object has been constructed successfully.
-         */    
+         */
         bool Scheduler::isConstructed() const
         {
             return Parent::isConstructed();
         }
-        
+
         /**
          * Creates a new thread.
          *
@@ -50,12 +50,12 @@ namespace local
         {
             if( not Self::isConstructed() ) return NULL;
             SchedulerThread* thread = new SchedulerThread(task, this);
-            if(thread == NULL) return NULL; 
-            if(thread->isConstructed()) return thread;  
+            if(thread == NULL) return NULL;
+            if(thread->isConstructed()) return thread;
             delete thread;
             return NULL;
         }
-        
+
         /**
          * Returns currently executing thread.
          *
@@ -63,7 +63,7 @@ namespace local
          */
         api::Thread& Scheduler::getCurrentThread() const
         {
-            if( not Self::isConstructed() ) 
+            if( not Self::isConstructed() )
             {
                 System::terminate(ERROR_SYSCALL_CALLED);
             }
@@ -77,14 +77,14 @@ namespace local
                 if(thread == NULL) break;
                 if(thread->getId() == id) break;
             }
-            if(thread == NULL) 
+            if(thread == NULL)
             {
                 System::terminate(ERROR_RESOURCE_NOT_FOUND);
             }
             Interrupt::enableAll(is);
             return *thread;
         }
-        
+
         /**
          * Yields to next thread.
          */
@@ -93,24 +93,24 @@ namespace local
             if( not Self::isConstructed() )
             {
                 System::terminate(ERROR_SYSCALL_CALLED);
-            }                
+            }
             // TODO: sched_yield();
         }
-        
-        /** 
+
+        /**
          * Returns the toggle interface for controlling global thread switching.
          *
          * @return toggle interface.
-         */ 
+         */
         api::Toggle& Scheduler::toggle()
         {
             return globalThread_;
-        }    
-    
-        /** 
+        }
+
+        /**
          * Constructor.
          *
-         * When first scheduler timer interrupt is occurred, 
+         * When first scheduler timer interrupt is occurred,
          * default registers of parent interrupt class will be used
          * for storing the operating system context to it.
          *
@@ -120,10 +120,10 @@ namespace local
         {
             if( not isConstructed() ) return false;
             if( not globalThread_.isConstructed() ) return false;
-            if( not threads_.isConstructed() ) return false;        
-            return true;      
+            if( not threads_.isConstructed() ) return false;
+            return true;
         }
-        
+
         /**
          * Adds a thread to execution list
          *
@@ -136,8 +136,8 @@ namespace local
             bool res = threads_.add(thread);
             Interrupt::enableAll(is);
             return res;
-        }    
-        
+        }
+
         /**
          * Removes the first occurrence of the specified thread.
          *
@@ -149,6 +149,6 @@ namespace local
             bool const is = Interrupt::disableAll();
             threads_.removeElement(thread);
             Interrupt::enableAll(is);
-        }    
+        }
     }
 }

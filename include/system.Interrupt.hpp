@@ -1,8 +1,8 @@
-/** 
+/**
  * Hardware interrupt resource.
- * 
+ *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2018, Embedded Team, Sergey Baigudin
+ * @copyright 2014-2018, Sergey Baigudin, Baigudin Software
  * @license   http://embedded.team/license/
  */
 #ifndef SYSYEM_INTERRUPT_HPP_
@@ -20,84 +20,84 @@ namespace local
         {
             typedef system::Interrupt Self;
             typedef system::Object    Parent;
-        
+
         public:
-            
-            /** 
+
+            /**
              * Constructor.
              *
              * @param handler user class which implements an interrupt handler interface.
              * @param source  available interrupt source.
-             */     
+             */
             Interrupt(api::Task& handler, int32 source);
-            
-            /** 
+
+            /**
              * Destructor.
              */
             virtual ~Interrupt();
-            
+
             /**
              * Tests if this object has been constructed.
              *
              * @return true if object has been constructed successfully.
-             */    
+             */
             virtual bool isConstructed() const;
-            
+
             /**
              * Jumps to interrupt hardware vector.
-             */      
-            virtual void jump();    
-            
+             */
+            virtual void jump();
+
             /**
              * Clears an interrupt status of this source.
-             */     
+             */
             virtual void clear();
-            
+
             /**
              * Sets an interrupt status of this source.
-             */    
+             */
             virtual void set();
-            
+
             /**
              * Locks this interrupt source.
              *
              * @return an interrupt enable source bit value before method was called.
-             */    
+             */
             virtual bool disable();
-            
+
             /**
              * Unlocks this interrupt source.
              *
              * @param status returned status by lock method.
              */
             virtual void enable(bool status);
-            
+
             /**
              * Disables all maskable interrupts.
              *
              * @return global interrupts enable bit value before method was called.
              */
             static bool disableAll();
-            
+
             /**
              * Enables all maskable interrupts.
              *
-             * The true passed argument directly turns all maskable interrupts on, 
-             * and the false does nothing, the interrupts stay in the current state.     
+             * The true passed argument directly turns all maskable interrupts on,
+             * and the false does nothing, the interrupts stay in the current state.
              *
              * @param status the returned status by disable method.
              */
-            static void enableAll(bool status=true);        
-        
+            static void enableAll(bool status=true);
+
         private:
-          
+
             /**
              * Constructor.
              *
-             * @param handler pointer to user class which implements an interrupt handler interface.   
-             * @param source  available interrupt source.     
-             * @return true if object has been constructed successfully.     
-             */    
+             * @param handler pointer to user class which implements an interrupt handler interface.
+             * @param source  available interrupt source.
+             * @return true if object has been constructed successfully.
+             */
             bool construct(api::Task* handler, int32 source);
 
             /**
@@ -106,15 +106,15 @@ namespace local
              * @param obj reference to source object.
              */
             Interrupt(const Interrupt& obj);
-          
+
             /**
              * Assignment operator.
              *
              * @param obj reference to source object.
-             * @return reference to this object.     
+             * @return reference to this object.
              */
             Interrupt& operator =(const Interrupt& obj);
-        
+
         };
     }
 }

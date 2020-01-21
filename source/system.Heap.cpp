@@ -1,8 +1,8 @@
 /**
  * The operating system heap memory.
- * 
+ *
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2018, Embedded Team, Sergey Baigudin
+ * @copyright 2018, Sergey Baigudin, Baigudin Software
  * @license   http://embedded.team/license/
  */
 #include "system.Heap.hpp"
@@ -12,20 +12,20 @@ namespace local
 {
     namespace system
     {
-        /** 
+        /**
          * Constructor.
-         */     
+         */
         Heap::Heap() : Parent()
         {
         }
-    
-        /** 
+
+        /**
          * Destructor.
          */
         Heap::~Heap()
         {
         }
-        
+
         /**
          * Tests if this object has been constructed.
          *
@@ -40,11 +40,11 @@ namespace local
          * Allocates memory.
          *
          * @param size - required memory size in byte.
-         * @param ptr  - NULL value becomes to allocate memory, and 
-         *               other given values are simply returned 
+         * @param ptr  - NULL value becomes to allocate memory, and
+         *               other given values are simply returned
          *               as memory address.
          * @return pointer to allocated memory or NULL.
-         */    
+         */
         void* Heap::allocate(size_t const size, void* const ptr)
         {
             void* addr;
@@ -58,12 +58,12 @@ namespace local
             }
             return addr;
         }
-        
+
         /**
          * Frees an allocated memory.
          *
          * @param ptr - pointer to allocated memory.
-         */      
+         */
         void Heap::free(void* const ptr)
         {
             Allocator::free(ptr);
