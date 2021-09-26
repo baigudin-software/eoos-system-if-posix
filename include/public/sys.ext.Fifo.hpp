@@ -1,10 +1,10 @@
 /**
- * @file      sys.Fifo.hpp
+ * @file      sys.ext.Fifo.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2020-2021, Sergey Baigudin, Baigudin Software
  */
-#ifndef SYS_FIFO_HPP_
-#define SYS_FIFO_HPP_
+#ifndef SYS_EXT_FIFO_HPP_
+#define SYS_EXT_FIFO_HPP_
 
 #include <sys/types.h>  ///< For OPEN(2)
 #include <sys/stat.h>   ///< For OPEN(2)
@@ -24,6 +24,8 @@
 namespace eoos
 {
 namespace sys
+{
+namespace ext
 {
 
 /** 
@@ -320,6 +322,7 @@ private:
 
 };
 
+} // namespace ext
 } // namespace sys
 } // namespace eoos
-#endif // SYS_FIFO_HPP_
+#endif // SYS_EXT_FIFO_HPP_

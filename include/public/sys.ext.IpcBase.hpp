@@ -1,10 +1,10 @@
 /**
- * @file      sys.IpcBase.hpp
+ * @file      sys.ext.IpcBase.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2020-2021, Sergey Baigudin, Baigudin Software
  */
-#ifndef SYS_IPC_BASE_HPP_
-#define SYS_IPC_BASE_HPP_
+#ifndef SYS_EXT_IPCBASE_HPP_
+#define SYS_EXT_IPCBASE_HPP_
 
 #include "Object.hpp"
 #include "sys.IpcPacket.hpp"
@@ -18,7 +18,9 @@
 namespace eoos
 {
 namespace sys
-{         
+{
+namespace ext
+{
 
 /**
  * @class IpcBase
@@ -190,6 +192,7 @@ private:
     lib::String dbPath_;
 };
 
+} // namespace ext
 } // namespace sys
 } // namespace eoos
-#endif // SYS_IPC_BASE_HPP_
+#endif // SYS_EXT_IPCBASE_HPP_

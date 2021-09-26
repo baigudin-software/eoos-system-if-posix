@@ -1,10 +1,10 @@
 /**
- * @file      sys.IpcPacket.hpp
+ * @file      sys.ext.IpcPacket.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2020-2021, Sergey Baigudin, Baigudin Software
  */
-#ifndef SYS_IPC_PACKET_HPP_
-#define SYS_IPC_PACKET_HPP_
+#ifndef SYS_EXT_IPCPACKET_HPP_
+#define SYS_EXT_IPCPACKET_HPP_
 
 #include <vector>
 #include "Object.hpp"
@@ -15,6 +15,8 @@
 namespace eoos
 {
 namespace sys
+{
+namespace ext
 {
 
 /**
@@ -447,6 +449,7 @@ private:
     bool_t isReserving_ {true};
 };
 
+} // namespace ext
 } // namespace sys
 } // namespace eoos
-#endif // SYS_IPC_PACKET_HPP_
+#endif // SYS_EXT_IPCPACKET_HPP_

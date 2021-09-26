@@ -1,11 +1,11 @@
 /**
- * @file      sys.IpcId.hpp
+ * @file      sys.ext.IpcId.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2020-2021, Sergey Baigudin, Baigudin Software
  */
 
-#ifndef SYS_IPC_ID_HPP_
-#define SYS_IPC_ID_HPP_
+#ifndef SYS_EXT_IPCID_HPP_
+#define SYS_EXT_IPCID_HPP_
 
 #include "Types.hpp"
 
@@ -16,6 +16,8 @@
 namespace eoos
 {
 namespace sys
+{
+namespace ext
 {
 
 /**
@@ -86,6 +88,7 @@ private:
     Type id_;
 };
 
+} // namespace ext
 } // namespace sys
 } // namespace eoos
-#endif // SYS_IPC_ID_HPP_
+#endif // SYS_EXT_IPCID_HPP_

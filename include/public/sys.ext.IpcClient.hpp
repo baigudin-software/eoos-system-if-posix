@@ -1,10 +1,10 @@
 /**
- * @file      sys.IpcClient.hpp
+ * @file      sys.ext.IpcClient.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2020-2021, Sergey Baigudin, Baigudin Software
  */
-#ifndef SYS_IPC_CLIENT_HPP_
-#define SYS_IPC_CLIENT_HPP_
+#ifndef SYS_EXT_IPCCLIENT_HPP_
+#define SYS_EXT_IPCCLIENT_HPP_
 
 #include "sys.IpcBase.hpp"
 #include "sys.Fifo.hpp"
@@ -16,6 +16,8 @@
 namespace eoos
 {
 namespace sys
+{
+namespace ext
 {
 
 /**
@@ -176,6 +178,7 @@ private:
     };
 };
 
+} // namespace ext
 } // namespace sys
 } // namespace eoos
-#endif // SYS_IPC_CLIENT_HPP_
+#endif // SYS_EXT_IPCCLIENT_HPP_

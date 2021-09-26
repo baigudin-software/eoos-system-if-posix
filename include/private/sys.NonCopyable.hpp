@@ -3,8 +3,8 @@
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2021, Sergey Baigudin, Baigudin Software
  */
-#ifndef SYS_NON_COPYABLE_HPP_
-#define SYS_NON_COPYABLE_HPP_
+#ifndef SYS_NONCOPYABLE_HPP_
+#define SYS_NONCOPYABLE_HPP_
 
 #include "sys.Object.hpp"
 
@@ -59,4 +59,4 @@ private:
 
 } // namespace sys
 } // namespace eoos
-#endif // SYS_NON_COPYABLE_HPP_
+#endif // SYS_NONCOPYABLE_HPP_
