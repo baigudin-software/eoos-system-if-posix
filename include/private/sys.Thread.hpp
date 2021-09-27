@@ -46,13 +46,9 @@ public:
      */
     ~Thread() override
     {
-        if(handle_ != NULLPTR)
-        {
-            // @todo POSIX calls
-            handle_ = NULLPTR;
-            status_ = STATUS_DEAD;
-        }
-    }   
+        // @todo POSIX calls
+        status_ = STATUS_DEAD;
+    }
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
@@ -225,11 +221,6 @@ private:
      * @brief Current identifier.
      */
     int32_t id_ {-7};
-    
-    /**
-     * @brief A Windows handle of this thread.
-     */
-    ::HANDLE handle_ {NULLPTR};
 
 };
 
