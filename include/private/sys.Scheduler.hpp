@@ -20,7 +20,6 @@ namespace sys
  */
 class Scheduler : public NonCopyable, public api::Scheduler
 {
-    using Self = Scheduler;
     using Parent = NonCopyable;
 
 public:

@@ -28,14 +28,14 @@ enum class Error : int32_t
     SYSCALL_CALLED = 1,
 
     /**
-     * @brief Error of a no strict MISRA C++ function calling.
+     * @brief Error of the OS termination.
      */
-    NO_MISRA_FUNCTION_CALLED = 2,
+    SYSTEM_ABORT = 2,
 
     /**
      * @brief Error of a user program occurred.
      */
-    USER_TERMINATION = 3,
+    USER_ABORT = 3,
 
     /**
      * @brief Error of searching of a resource.

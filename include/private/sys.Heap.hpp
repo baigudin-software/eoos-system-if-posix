@@ -20,7 +20,6 @@ namespace sys
  */
 class Heap : public NonCopyable, public api::Heap
 {
-    using Self = Heap;
     using Parent = NonCopyable;
 
 public:

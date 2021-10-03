@@ -20,7 +20,6 @@ namespace sys
  */
 class Semaphore : public NonCopyable, public api::Semaphore
 {
-    using Self = Semaphore;
     using Parent = NonCopyable;
 
 public:
@@ -56,7 +55,7 @@ public:
      */
     bool_t acquire() override
     {
-        if( not Self::isConstructed() ) return false;
+        if( not isConstructed() ) return false;
         return false;
     }
 
@@ -65,7 +64,7 @@ public:
      */
     bool_t acquire(int32_t permits) override
     {
-        if( not Self::isConstructed() ) return false;
+        if( not isConstructed() ) return false;
         return false;
     }
 
@@ -74,7 +73,7 @@ public:
      */
     void release() override
     {
-        if( not Self::isConstructed() ) return;
+        if( not isConstructed() ) return;
     }
 
     /**
@@ -82,7 +81,7 @@ public:
      */
     void release(int32_t permits) override
     {
-        if( not Self::isConstructed() ) return;
+        if( not isConstructed() ) return;
     }
 
     /**
@@ -103,7 +102,7 @@ private:
      */
     bool_t construct(int32_t permits)
     {
-        if( not Self::isConstructed() ) return false;
+        if( not isConstructed() ) return false;
         return true;
     }
 

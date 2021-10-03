@@ -21,7 +21,6 @@ namespace sys
  */
 class Thread : public NonCopyable, public api::Thread
 {
-    using Self = Thread;
     using Parent = NonCopyable;
 
 public:
@@ -63,7 +62,7 @@ public:
      */
     void execute() override try
     {
-        if( Self::isConstructed() && status_ == STATUS_NEW)
+        if( isConstructed() && status_ == STATUS_NEW)
         {
             int32_t const exitCode = -7;
             // If the exitCode is 1, the specified thread was suspended but was restarted.
@@ -86,7 +85,7 @@ public:
      */
     void join() override try
     {
-	    if( Self::isConstructed() )
+	    if( isConstructed() )
         {
             // @todo POSIX calls
         }
@@ -99,7 +98,7 @@ public:
      */
     int64_t getId() const override
     {
-        return Self::isConstructed() ? static_cast<int64_t>(id_) : ID_WRONG;
+        return isConstructed() ? static_cast<int64_t>(id_) : ID_WRONG;
     }
     
     /**
@@ -115,7 +114,7 @@ public:
      */
     int32_t getPriority() const override
     {
-        return Self::isConstructed() ? priority_ : PRIORITY_WRONG;        
+        return isConstructed() ? priority_ : PRIORITY_WRONG;        
     }
 
     /**
@@ -124,7 +123,7 @@ public:
     bool_t setPriority(int32_t priority) override
     {
         bool_t res { false };
-        if( Self::isConstructed() )
+        if( isConstructed() )
         {
             if( (PRIORITY_MIN <= priority) && (priority <= PRIORITY_MAX) )
             {
@@ -165,7 +164,7 @@ private:
         bool_t res {false};
         do
         {
-            if( not Self::isConstructed() )
+            if( not isConstructed() )
             {
                 break;
             }

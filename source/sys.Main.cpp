@@ -18,6 +18,7 @@
  * @return error code or zero.
  *
  * @todo Add the arguments to the function.
+ * @todo Revise to remove the function at all as for now it won't work at all!
  */
 int main() try
 {

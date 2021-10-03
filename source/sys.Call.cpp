@@ -52,7 +52,11 @@ int32_t Call::execute()
     
 api::System& Call::get()
 {
-    return System::call();
+    if(system_ == NULLPTR)
+    {
+        System::exit(Error::SYSTEM_ABORT);
+    }
+    return *system_;
 }
 
 } // namespace sys

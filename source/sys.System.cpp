@@ -14,7 +14,7 @@ namespace eoos
 namespace sys
 {
         
-api::System* System::system_ = NULLPTR;
+bool_t System::isInitialized_ {false};
 
 System::System() : Parent()
 {
@@ -24,7 +24,7 @@ System::System() : Parent()
 
 System::~System()
 {
-    system_ = NULLPTR;
+    isInitialized_ = false;
 }
 
 bool_t System::isConstructed() const
@@ -39,7 +39,7 @@ int64_t System::getTime() const
 
 api::Heap& System::getHeap() const
 {
-    if( not Self::isConstructed() )
+    if( not isConstructed() )
     {
         exit(Error::SYSCALL_CALLED);
     }
@@ -48,7 +48,7 @@ api::Heap& System::getHeap() const
 
 api::Scheduler& System::getScheduler() const
 {
-    if( not Self::isConstructed() )
+    if( not isConstructed() )
     {
         exit(Error::SYSCALL_CALLED);
     }
@@ -57,20 +57,20 @@ api::Scheduler& System::getScheduler() const
 
 api::Mutex* System::createMutex()
 {
-    api::Mutex* const res = new Mutex();
+    api::Mutex* const res = isConstructed() ? new Mutex() : NULLPTR;
     return proveResource(res);
 }
 
 api::Semaphore* System::createSemaphore(int32_t permits, bool_t isFair)
 {
-    api::Semaphore* const res = new Semaphore(permits);
+    api::Semaphore* const res = isConstructed() ? new Semaphore(permits) : NULLPTR;
     return proveResource(res);
 }
 
 int32_t System::execute()
 {
     int32_t error;
-    if( not Self::isConstructed() )
+    if( not isConstructed() )
     {
         error = static_cast<int32_t>(Error::UNDEFINED);
     }
@@ -82,17 +82,10 @@ int32_t System::execute()
     return error;
 }
 
-api::System& System::call()
-{
-    if( system_ == NULLPTR )
-    {
-        exit(Error::SYSCALL_CALLED);
-    }
-    return *system_;
-}
-
 void System::exit(Error const error)
 {
+    const int STATUS_MASK {0xFF};
+    ::exit(static_cast<int>(error) & STATUS_MASK);
     // This code must NOT be executed
     // @todo throw an exection here is better.
     volatile bool_t const isTerminated = true;
@@ -101,10 +94,10 @@ void System::exit(Error const error)
 
 bool_t System::construct()
 {
-    bool_t res = Self::isConstructed();
+    bool_t res = isConstructed();
     while(res == true)
     {
-        if( system_ != NULLPTR )
+        if( isInitialized_ )
         {
             res = false;
             continue;
@@ -119,7 +112,7 @@ bool_t System::construct()
             res = false;
             continue;
         }
-        system_ = this;
+        isInitialized_ = true;
         break;
     }
     return res;
