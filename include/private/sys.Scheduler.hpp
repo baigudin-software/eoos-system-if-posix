@@ -27,12 +27,12 @@ public:
     /**
      * @brief Constructor.
      */
-    Scheduler();
+    Scheduler() = default;
 
     /**
      * @brief Destructor.
      */
-    ~Scheduler() override;
+    ~Scheduler() override = default;
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
@@ -47,21 +47,12 @@ public:
     /**
      * @copydoc eoos::api::Scheduler::sleep(int64_t,int32_t)
      */
-    void sleep(int64_t millis, int32_t nanos = 0) override;        
+    void sleep(int64_t millis, int32_t nanos = 0) override;
 
     /**
      * @copydoc eoos::api::Scheduler::yield()
      */
     void yield() override;
-
-private:
-
-    /**
-     * @brief Constructor.
-     *
-     * @return true if object has been constructed successfully.
-     */
-    bool_t construct();
     
 };
 

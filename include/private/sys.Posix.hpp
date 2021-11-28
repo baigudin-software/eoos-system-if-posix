@@ -8,6 +8,12 @@
 #ifndef SYS_POSIX_HPP_
 #define SYS_POSIX_HPP_
 
-#include <stdlib.h> ///< For EXIT(3)
+#include <stdlib.h>     ///< For EXIT(3)
+#include <pthread.h>
+#include <sys/types.h>
+#include <time.h>       ///< For NANOSLEEP(2)
+#include <semaphore.h>
+#include <sched.h>
+
 
 #endif // SYS_POSIX_HPP_

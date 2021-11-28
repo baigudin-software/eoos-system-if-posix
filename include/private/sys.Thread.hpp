@@ -9,6 +9,8 @@
 #include "sys.NonCopyable.hpp"
 #include "api.Thread.hpp"
 #include "api.Task.hpp"
+#include "sys.Scheduler.hpp"
+#include "lib.Semaphore.hpp"
 
 namespace eoos
 {
@@ -31,13 +33,11 @@ public:
      * @param task      A task interface whose main method is invoked when this thread is started.
      * @param scheduler A scheduler controls this thread.
      */
-    Thread(api::Task& task, Scheduler* const scheduler) try : Parent(),
+    Thread(api::Task& task, Scheduler* const scheduler) : Parent(),
         task_          (&task),
         scheduler_     (scheduler){
         bool_t const isConstructed  { construct() };
         setConstructed( isConstructed );
-    } catch (...) {
-        setConstructed(false);
     }
 
     /**
@@ -45,8 +45,11 @@ public:
      */
     ~Thread() override
     {
-        // @todo POSIX calls
-        status_ = STATUS_DEAD;
+        status_ = STATUS_DEAD;        
+        if( not isJoined_ )
+        {
+            ::pthread_cancel(thread_);
+        }
     }
 
     /**
@@ -60,37 +63,32 @@ public:
     /**
      * @copydoc eoos::api::Thread::execute()
      */
-    void execute() override try
+    void execute() override
     {
         if( isConstructed() && status_ == STATUS_NEW)
         {
-            int32_t const exitCode = -7;
-            // If the exitCode is 1, the specified thread was suspended but was restarted.
-            if(exitCode == 1)
-            {
-                status_ = STATUS_RUNNABLE;
-            }
-            else
-            {
-                status_ = STATUS_DEAD;
-            }
+            status_ = STATUS_RUNNABLE;
+            sem_.Release();
         }
-    } catch (...) {
-        status_ = STATUS_DEAD;
-        return;
     }
     
     /**
      * @copydoc eoos::api::Thread::join()
      */
-    void join() override try
+    bool_t join() override
     {
-	    if( isConstructed() )
+        if( isConstructed() )
         {
-            // @todo POSIX calls
+            // Initiate joining
+            isJoining_ = true;
+            // Release even if it is released by Execute function
+            sem_.release();
+            // Do the kernel syscall
+            int const error {::pthread_join(thread_, NULL)};
+            isJoined_ = (error == 0) ? true : false;
         }
-    } catch (...) {
-        return;
+        return isJoined_;
+
     }
 
     /**
@@ -98,7 +96,7 @@ public:
      */
     int64_t getId() const override
     {
-        return isConstructed() ? static_cast<int64_t>(id_) : ID_WRONG;
+        return static_cast<int64_t>(tid_);
     }
     
     /**
@@ -176,8 +174,17 @@ private:
             {
                 break;
             }
-            // @todo POSIX calls
-            res = false;
+            if( not sem_.isConstructed() )
+            {
+                break;
+            }
+            int const error = ::pthread_create(&thread_, NULL, start, &this_);
+            if(error != 0)
+            {
+                break;
+            }
+            pid_ = ::getpid();            
+            res = true;
         } while(false);
         if( res == false )
         {
@@ -185,6 +192,64 @@ private:
         }
         return res;    
     }
+    
+    /**
+     * @brief Runs a start function of the task interface.
+     *
+     * @return zero, or error code if an error has been occurred.
+     */
+    int32_t run()
+    {
+        // Wait for calling Execute function
+        bool const isAcquired {sem_.acquire()};
+        // Start user main function
+        if( isAcquired && not isJoining_ )
+        {
+            error_ = task_.start();
+        }
+        status_ = STATUS_DEAD;
+        return error_;
+    }
+
+    /**
+     * @brief Starts a thread routine.
+     *
+     * @param argument Pointer to arguments passed by the POSIX pthread_create function.
+     */
+    static void* start(void* argument)
+    {
+        void* const retptr {NULLPTR};
+        if(argument == NULLPTR) 
+        {
+            return retptr;
+        }
+        Thread* const thread { *reinterpret_cast<Thread**>(argument) };
+        if(thread == NULLPTR || not thread->IsConstructed() )
+        {
+            return retptr;
+        }
+        int oldtype;
+        int error {::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype)};
+        if(error != 0)
+        {
+            return retptr;
+        }
+        error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
+        if(error != 0)
+        {
+            return retptr;
+        }
+        tid_ = ::gettid();        
+        // Invoke the member function through the pointer
+        // @todo Check the return value
+        thread->run();
+        return retptr;
+    }    
+    
+    /**
+     * @brief The semaphore to start user thread.
+     */
+    lib::Semaphore sem_ {0};    
 
     /**
      * @brief User executing runnable interface.
@@ -217,10 +282,29 @@ private:
     Thread* this_ {this};
 
     /**
-     * @brief Current identifier.
+     * @brief Waiting for this thread to die is initiated.
      */
-    int32_t id_ {-7};
+    bool isJoining_ {false};
 
+    /**
+     * @brief This thread is dead.
+     */
+    bool isJoined_ {false};
+    
+    /**
+     * @brief The new thread resource identifier.
+     */
+    ::pthread_t thread_ {0};    
+
+    /**
+     * @brief The process ID.
+     */    
+    ::pid_t pid_ {static_cast<::pid_t>(ID_WRONG)};
+
+    /**
+     * @brief This thread ID.
+     */    
+    ::pid_t tid_ {static_cast<::pid_t>(ID_WRONG)};
 };
 
 } // namespace sys

@@ -32,20 +32,6 @@ bool_t System::isConstructed() const
     return Parent::isConstructed();
 }
 
-int64_t System::getTime() const
-{
-    return 0;
-}
-
-api::Heap& System::getHeap() const
-{
-    if( not isConstructed() )
-    {
-        exit(Error::SYSCALL_CALLED);
-    }
-    return heap_;
-}
-
 api::Scheduler& System::getScheduler() const
 {
     if( not isConstructed() )
@@ -98,11 +84,6 @@ bool_t System::construct()
     while(res == true)
     {
         if( isInitialized_ )
-        {
-            res = false;
-            continue;
-        }
-        if( not heap_.isConstructed() )
         {
             res = false;
             continue;

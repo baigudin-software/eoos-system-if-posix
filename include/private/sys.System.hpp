@@ -8,7 +8,6 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.System.hpp"
-#include "sys.Heap.hpp"
 #include "sys.Scheduler.hpp"
 #include "sys.Error.hpp"
 
@@ -41,16 +40,6 @@ public:
      * @copydoc eoos::api::Object::isConstructed()
      */
     bool_t isConstructed() const override;
-
-    /**
-     * @copydoc eoos::api::System::getTime()
-     */
-    int64_t getTime() const override;
-
-    /**
-     * @copydoc eoos::api::System::getHeap()
-     */
-    api::Heap& getHeap() const override;
 
     /**
      * @copydoc eoos::api::System::getScheduler()
@@ -116,11 +105,6 @@ private:
      */
     static bool_t isInitialized_;
     
-    /**
-     * @brief The operating system heap memory.
-     */
-    mutable Heap heap_ {};
-
     /**
      * @brief The operating system scheduler.
      */
