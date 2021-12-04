@@ -12,7 +12,6 @@ PRIVATE
 
 target_sources(target-eoos
 PRIVATE
-    "${CMAKE_CURRENT_LIST_DIR}/source/sys.Heap.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.Main.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.Scheduler.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.System.cpp"

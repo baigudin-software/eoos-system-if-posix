@@ -68,7 +68,7 @@ public:
         if( isConstructed() && status_ == STATUS_NEW)
         {
             status_ = STATUS_RUNNABLE;
-            sem_.Release();
+            sem_.release();
         }
     }
     
@@ -91,14 +91,6 @@ public:
 
     }
 
-    /**
-     * @copydoc eoos::api::Thread::getId()
-     */
-    int64_t getId() const override
-    {
-        return static_cast<int64_t>(tid_);
-    }
-    
     /**
      * @copydoc eoos::api::Thread::getStatus()
      */
@@ -183,7 +175,6 @@ private:
             {
                 break;
             }
-            pid_ = ::getpid();            
             res = true;
         } while(false);
         if( res == false )
@@ -205,7 +196,7 @@ private:
         // Start user main function
         if( isAcquired && not isJoining_ )
         {
-            error_ = task_.start();
+            error_ = task_->start();
         }
         status_ = STATUS_DEAD;
         return error_;
@@ -224,7 +215,7 @@ private:
             return retptr;
         }
         Thread* const thread { *reinterpret_cast<Thread**>(argument) };
-        if(thread == NULLPTR || not thread->IsConstructed() )
+        if(thread == NULLPTR || not thread->isConstructed() )
         {
             return retptr;
         }
@@ -239,7 +230,6 @@ private:
         {
             return retptr;
         }
-        tid_ = ::gettid();        
         // Invoke the member function through the pointer
         // @todo Check the return value
         thread->run();
@@ -249,7 +239,7 @@ private:
     /**
      * @brief The semaphore to start user thread.
      */
-    lib::Semaphore sem_ {0};    
+    lib::Semaphore<> sem_ {0};    
 
     /**
      * @brief User executing runnable interface.
@@ -296,15 +286,6 @@ private:
      */
     ::pthread_t thread_ {0};    
 
-    /**
-     * @brief The process ID.
-     */    
-    ::pid_t pid_ {static_cast<::pid_t>(ID_WRONG)};
-
-    /**
-     * @brief This thread ID.
-     */    
-    ::pid_t tid_ {static_cast<::pid_t>(ID_WRONG)};
 };
 
 } // namespace sys

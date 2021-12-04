@@ -62,7 +62,7 @@ public:
             int const error { ::sem_wait(sem_) };
             if(error == 0) 
             { 
-                res = true 
+                res = true; 
             }
         }
         return res;
@@ -108,7 +108,7 @@ public:
     bool_t isFair() const override
     {
         int const priority {::sched_getscheduler(0)};
-        return ( priority == ::SCHED_FIFO || priority == ::SCHED_RR) ? true : false;
+        return ( priority == SCHED_FIFO || priority == SCHED_RR) ? true : false;
     }
 
 private:
@@ -126,7 +126,7 @@ private:
             {
                 break;
             }
-            sem_ = new (lib::nothrow) ::sem_t;
+            sem_ = new (nothrow) ::sem_t;
             if(sem_ == NULLPTR)
             {
                 break;

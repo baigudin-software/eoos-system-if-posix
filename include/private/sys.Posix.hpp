@@ -14,6 +14,7 @@
 #include <time.h>       ///< For NANOSLEEP(2)
 #include <semaphore.h>
 #include <sched.h>
-
+#include <unistd.h>     ///< For GETPID(2)
+#include <errno.h>
 
 #endif // SYS_POSIX_HPP_

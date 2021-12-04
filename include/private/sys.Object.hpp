@@ -18,9 +18,9 @@ namespace sys
  * @class Object
  * @brief Root class of the operating system class hierarchy.
  */
-class Object : public ::eoos::Object<Allocator>
+class Object : public ::eoos::Object<>
 {
-    using Parent = ::eoos::Object<Allocator>;
+    using Parent = ::eoos::Object<>;
 
 public:
 

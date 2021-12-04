@@ -108,7 +108,7 @@ private:
             {
                 break;
             }
-            mutex_ = new (lib::nothrow) ::pthread_mutex_t;
+            mutex_ = new (nothrow) ::pthread_mutex_t;
             if(mutex_ == NULLPTR)
             {
                 break;

@@ -23,7 +23,7 @@ namespace
  */
 int nanosleep(::timespec* const rem)
 {
-    ::timespec const req {rem};
+    ::timespec const req {*rem};
     return ::nanosleep(&req, rem);
 }
 
@@ -51,38 +51,47 @@ void Scheduler::sleep(int64_t millis, int32_t nanos)
         bool_t hasToSleep {false};
         ::timespec rem {millis * 1000, nanos};
         do {
-            int const error {nanosleep(&rem)};
-            switch (error)
+            int const error { nanosleep(&rem) };
+            if(error == 0) 
             {
-                // Problem with copying information from user space.
-                case ::EFAULT:
+                hasToSleep = false;
+                break;
+            }
+            else if(error == -1)
+            {
+                int errsv = errno;
+                switch( errsv )
                 {
-                    hasToSleep = false;
-                    break;
+                    // Problem with copying information from user space.
+                    case EFAULT:
+                    {
+                        hasToSleep = false;
+                        break;
+                    }
+                    // The pause has been interrupted by a signal that was delivered to the thread.
+                    case EINTR:
+                    {
+                        hasToSleep = true;                
+                        break;
+                    }        
+                    // The value in the tv_nsec field was not in the range 0 to 999999999 or tv_sec was negative.
+                    case EINVAL:
+                    {
+                        hasToSleep = false;
+                        break;
+                    }
+                    default:
+                    {
+                        setConstructed(false);
+                        hasToSleep = false;
+                        break;
+                    }
                 }
-                // The pause has been interrupted by a signal that was delivered to the thread.
-                case ::EINTR:
-                {
-                    hasToSleep = true;                
-                    break;
-                }        
-                // The value in the tv_nsec field was not in the range 0 to 999999999 or tv_sec was negative.
-                case ::EINVAL:
-                {
-                    hasToSleep = false;
-                    break;
-                }
-                case 0:
-                {
-                    hasToSleep = false;
-                    break;
-                }        
-                default:
-                {
-                    setConstructed(false);
-                    hasToSleep = false;
-                    break;
-                }
+            }
+            else
+            {
+                setConstructed(false);
+                hasToSleep = false;
             }
         } while(hasToSleep);
     }
