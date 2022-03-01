@@ -48,7 +48,8 @@ public:
         status_ = STATUS_DEAD;        
         if( not isJoined_ )
         {
-            ::pthread_cancel(thread_);
+            //::pthread_cancel(thread_);
+            ::pthread_detach(thread_);
         }
     }
 
@@ -215,10 +216,14 @@ private:
             return retptr;
         }
         Thread* const thread { *reinterpret_cast<Thread**>(argument) };
-        if(thread == NULLPTR || not thread->isConstructed() )
+        if(thread == NULLPTR)
         {
             return retptr;
         }
+        if(not thread->isConstructed() )
+        {
+            return retptr;
+        }        
         int oldtype;
         int error {::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype)};
         if(error != 0)
