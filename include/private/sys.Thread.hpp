@@ -233,14 +233,14 @@ private:
         /**
          * @brief Attributes of the pthread_create function.
          */
-        pthread_attr_t attr;
+        ::pthread_attr_t attr;
         
         /**
          * @brief Constructor of not constructed object.
          */        
         PthreadAttr()
         {
-            pthread_attr_init(&attr)
+            ::pthread_attr_init(&attr);
         }
         
         /**
@@ -248,7 +248,7 @@ private:
          */        
         ~PthreadAttr()
         {
-            pthread_attr_destroy(&attr);
+            ::pthread_attr_destroy(&attr);
         }        
     };    
     
