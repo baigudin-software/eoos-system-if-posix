@@ -65,13 +65,35 @@ public:
     bool_t execute() override
     {
         bool_t res {false};
-        if( isConstructed() && status_ == STATUS_NEW)
-        {
-            int const error = ::pthread_create(&thread_, NULL, start, &task_);
-            res = (error == 0) ? true : false;
+        do{
+            if( not isConstructed() )
+            {
+                break;
+            }
+            if( status_ != STATUS_NEW )
+            {
+                break;
+            }
+            int error {0};
+            PthreadAttr pthreadAttr;
+            size_t const stackSize { task_->getStackSize() };
+            if(stackSize != 0)
+            {
+                error = ::pthread_attr_setstacksize(&pthreadAttr.attr, stackSize);
+                if(error != 0)
+                {
+                    break;
+                }
+            }
+            error = ::pthread_create(&thread_, &pthreadAttr.attr, start, &task_);
+            if(error != 0)
+            {
+                break;
+            }
             status_ = STATUS_RUNNABLE;
-        }
-        return res;
+            res = true;
+        } while(false);
+        return res;        
     }
     
     /**
@@ -200,7 +222,35 @@ private:
         }
         task->start();
         return NULLPTR;
-    }    
+    }
+
+    /**
+     * @struct The pthread attr container for the pthread_create function
+     * @brief The struct implements RAII approach on pthread_attr_t.
+     */
+    struct PthreadAttr
+    {
+        /**
+         * @brief Attributes of the pthread_create function.
+         */
+        pthread_attr_t attr;
+        
+        /**
+         * @brief Constructor of not constructed object.
+         */        
+        PthreadAttr()
+        {
+            pthread_attr_init(&attr)
+        }
+        
+        /**
+         * @brief Destructor.
+         */        
+        ~PthreadAttr()
+        {
+            pthread_attr_destroy(&attr);
+        }        
+    };    
     
     /**
      * @brief User executing runnable interface.
