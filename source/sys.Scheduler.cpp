@@ -39,7 +39,7 @@ api::Thread* Scheduler::createThread(api::Task& task)
     api::Thread* thread {NULLPTR};
     if( isConstructed() )
     {
-        thread = new Thread {task, this};
+        thread = new Thread {task};
     }
     return thread;
 }

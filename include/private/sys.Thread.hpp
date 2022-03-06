@@ -9,8 +9,6 @@
 #include "sys.NonCopyable.hpp"
 #include "api.Thread.hpp"
 #include "api.Task.hpp"
-#include "sys.Scheduler.hpp"
-#include "lib.Semaphore.hpp"
 
 namespace eoos
 {
@@ -30,12 +28,10 @@ public:
     /**
      * @brief Constructor of not constructed object.
      *
-     * @param task      A task interface whose main method is invoked when this thread is started.
-     * @param scheduler A scheduler controls this thread.
+     * @param task A task interface whose main method is invoked when this thread is started.
      */
-    Thread(api::Task& task, Scheduler* const scheduler) : Parent(),
-        task_          (&task),
-        scheduler_     (scheduler){
+    Thread(api::Task& task) : Parent(),
+        task_ (&task){
         bool_t const isConstructed  { construct() };
         setConstructed( isConstructed );
     }
@@ -45,11 +41,13 @@ public:
      */
     ~Thread() override
     {
-        status_ = STATUS_DEAD;        
-        if( not isJoined_ )
+        if( thread_ != 0 )
         {
-            //::pthread_cancel(thread_);
+            // @todo The thread detaching means the thread will still be executed by OS.
+            // Thus, to keep compatibility, common approach for all OSs shall be found
+            // for using pthread_cancel function to cancel the thread execution forcely.
             ::pthread_detach(thread_);
+            status_ = STATUS_DEAD;            
         }
     }
 
@@ -64,13 +62,16 @@ public:
     /**
      * @copydoc eoos::api::Thread::execute()
      */
-    void execute() override
+    bool_t execute() override
     {
+        bool_t res {false};
         if( isConstructed() && status_ == STATUS_NEW)
         {
+            int const error = ::pthread_create(&thread_, NULL, start, &task_);
+            res = (error == 0) ? true : false;
             status_ = STATUS_RUNNABLE;
-            sem_.release();
         }
+        return res;
     }
     
     /**
@@ -78,27 +79,16 @@ public:
      */
     bool_t join() override
     {
-        if( isConstructed() )
+        bool_t res {false};    
+        if( isConstructed() && status_ == STATUS_RUNNABLE )
         {
-            // Initiate joining
-            isJoining_ = true;
-            // Release even if it is released by Execute function
-            sem_.release();
-            // Do the kernel syscall
             int const error {::pthread_join(thread_, NULL)};
-            isJoined_ = (error == 0) ? true : false;
+            res = (error == 0) ? true : false;
+            status_ = STATUS_DEAD;
         }
-        return isJoined_;
+        return res;
 
     }
-
-    /**
-     * @copydoc eoos::api::Thread::getStatus()
-     */
-    Status getStatus() const override
-    {
-        return status_;
-    }    
 
     /**
      * @copydoc eoos::api::Thread::getPriority()
@@ -134,14 +124,6 @@ public:
         // @todo Implemet setting priority on system level regarding common API rage
         return res;
     }
-    
-    /**
-     * @copydoc eoos::api::Thread::getExecutionError()
-     */
-    int32_t getExecutionError() const override
-    {
-        return error_;
-    }    
 
 private:
 
@@ -159,23 +141,15 @@ private:
             {
                 break;
             }
-            if( task_ == NULLPTR || scheduler_ == NULLPTR )
+            if( task_ == NULLPTR )
             {
                 break;
             }
-            if( not task_->isConstructed() || not scheduler_->isConstructed() )
+            if( not task_->isConstructed() )
             {
                 break;
             }
-            if( not sem_.isConstructed() )
-            {
-                break;
-            }
-            int const error = ::pthread_create(&thread_, NULL, start, &this_);
-            if(error != 0)
-            {
-                break;
-            }
+            status_ = STATUS_NEW;
             res = true;
         } while(false);
         if( res == false )
@@ -183,24 +157,6 @@ private:
             status_ = STATUS_DEAD;
         }
         return res;    
-    }
-    
-    /**
-     * @brief Runs a start function of the task interface.
-     *
-     * @return zero, or error code if an error has been occurred.
-     */
-    int32_t run()
-    {
-        // Wait for calling Execute function
-        bool const isAcquired {sem_.acquire()};
-        // Start user main function
-        if( isAcquired && not isJoining_ )
-        {
-            error_ = task_->start();
-        }
-        status_ = STATUS_DEAD;
-        return error_;
     }
 
     /**
@@ -210,51 +166,46 @@ private:
      */
     static void* start(void* argument)
     {
-        void* const retptr {NULLPTR};
         if(argument == NULLPTR) 
         {
-            return retptr;
+            return NULLPTR;
         }
-        Thread* const thread { *reinterpret_cast<Thread**>(argument) };
-        if(thread == NULLPTR)
+        api::Task* const task = { *reinterpret_cast<api::Task**>(argument) };
+        if(task == NULLPTR)
         {
-            return retptr;
+            return NULLPTR;
         }
-        if(not thread->isConstructed() )
+        if(not task->isConstructed() )
         {
-            return retptr;
+            return NULLPTR;
         }        
         int oldtype;
+        // The thread is cancelable.  This is the default
+        // cancelability state in all new threads, including the
+        // initial thread.  The thread's cancelability type
+        // determines when a cancelable thread will respond to a
+        // cancellation request.
         int error {::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype)};
         if(error != 0)
         {
-            return retptr;
+            return NULLPTR;
         }
+        // The thread can be canceled at any time. Typically, it
+        // will be canceled immediately upon receiving a cancellation
+        // request, but the system doesn't guarantee this.
         error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
         if(error != 0)
         {
-            return retptr;
+            return NULLPTR;
         }
-        // Invoke the member function through the pointer
-        // @todo Check the return value
-        thread->run();
-        return retptr;
+        task->start();
+        return NULLPTR;
     }    
     
-    /**
-     * @brief The semaphore to start user thread.
-     */
-    lib::Semaphore<> sem_ {0};    
-
     /**
      * @brief User executing runnable interface.
      */
     api::Task* task_ {NULLPTR};
-
-    /**
-     * @brief The scheduler resource.
-     */
-    Scheduler* scheduler_ {NULLPTR};
 
     /**
      * @brief Current status.
@@ -265,26 +216,6 @@ private:
      * @brief This thread priority.
      */    
     int32_t priority_ {PRIORITY_NORM};    
-    
-    /**
-     * @brief Error of the thread task execution.
-     */    
-    int32_t error_ {-1};
-
-    /**
-     * @brief This class pointer.
-     */
-    Thread* this_ {this};
-
-    /**
-     * @brief Waiting for this thread to die is initiated.
-     */
-    bool isJoining_ {false};
-
-    /**
-     * @brief This thread is dead.
-     */
-    bool isJoined_ {false};
     
     /**
      * @brief The new thread resource identifier.
