@@ -101,6 +101,7 @@ void Scheduler::yield()
 {
     if( isConstructed() )
     {
+        // @todo Use  sched_yield() as standardized function.
         int const error = ::pthread_yield();
         if(error != 0)
         {
