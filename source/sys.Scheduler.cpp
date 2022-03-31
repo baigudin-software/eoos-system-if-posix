@@ -12,19 +12,43 @@ namespace eoos
 {
 namespace sys
 {
+    
 namespace
 {
 
 /**
- * @brief Suspends the execution of the calling thread
+ * @brief Causes current thread to sleep in seconds.
  *
- * @param rem   Time remained to sleep is in and out param
- * @return See NANOSLEEP(2)
+ * @param s A time to sleep in seconds.
  */
-int nanosleep(::timespec* const rem)
+void sSleep(int32_t const s)
 {
-    ::timespec const req {*rem};
-    return ::nanosleep(&req, rem);
+    unsigned int sec = static_cast<unsigned int>(s);
+    while(sec != 0)
+    {
+        sec = ::sleep(sec);
+    }
+}    
+
+/**
+ * @brief Causes current thread to sleep in milliseconds.
+ *
+ * @param ms A time to sleep in milliseconds.
+ * @return true if no system errors occured.
+ */
+bool_t msSleep(int32_t const ms)
+{
+    bool_t res {false};
+    if(0 < ms && ms < 1000)
+    {
+        ::useconds_t const us { static_cast<::useconds_t>(ms * 1000) };
+        int const error { ::usleep(us) };
+        if(error == 0)
+        {
+            res = true;
+        }
+    }
+    return res;
 }
 
 } // namespace
@@ -44,65 +68,24 @@ api::Thread* Scheduler::createThread(api::Task& task)
     return thread;
 }
 
-void Scheduler::sleep(int64_t millis, int32_t nanos)
+bool_t Scheduler::sleep(int32_t ms)
 {
+    bool_t res {false};
     if( isConstructed() )
     {
-        bool_t hasToSleep {false};
-        ::timespec rem {millis * 1000, nanos};
-        do {
-            int const error { nanosleep(&rem) };
-            if(error == 0) 
-            {
-                hasToSleep = false;
-                break;
-            }
-            else if(error == -1)
-            {
-                int errsv = errno;
-                switch( errsv )
-                {
-                    // Problem with copying information from user space.
-                    case EFAULT:
-                    {
-                        hasToSleep = false;
-                        break;
-                    }
-                    // The pause has been interrupted by a signal that was delivered to the thread.
-                    case EINTR:
-                    {
-                        hasToSleep = true;                
-                        break;
-                    }        
-                    // The value in the tv_nsec field was not in the range 0 to 999999999 or tv_sec was negative.
-                    case EINVAL:
-                    {
-                        hasToSleep = false;
-                        break;
-                    }
-                    default:
-                    {
-                        setConstructed(false);
-                        hasToSleep = false;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                setConstructed(false);
-                hasToSleep = false;
-            }
-        } while(hasToSleep);
+        int32_t time = ms / 1000;
+        sSleep(time);
+        time = ms % 1000;
+        res = msSleep(time);
     }
+    return res;
 }
 
 void Scheduler::yield()
 {
     if( isConstructed() )
     {
-        // @todo Use  sched_yield() as standardized function.
-        int const error = ::pthread_yield();
+        int const error = ::sched_yield();
         if(error != 0)
         {
             setConstructed(false);

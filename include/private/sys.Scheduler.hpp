@@ -45,9 +45,9 @@ public:
     api::Thread* createThread(api::Task& task) override;
     
     /**
-     * @copydoc eoos::api::Scheduler::sleep(int64_t,int32_t)
+     * @copydoc eoos::api::Scheduler::sleep(int32_t)
      */
-    void sleep(int64_t millis, int32_t nanos = 0) override;
+    bool_t sleep(int32_t ms) override;
 
     /**
      * @copydoc eoos::api::Scheduler::yield()
