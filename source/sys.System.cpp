@@ -47,7 +47,7 @@ api::Mutex* System::createMutex()
     return proveResource(res);
 }
 
-api::Semaphore* System::createSemaphore(int32_t permits, bool_t isFair)
+api::Semaphore* System::createSemaphore(int32_t permits)
 {
     api::Semaphore* const res = isConstructed() ? new Semaphore(permits) : NULLPTR;
     return proveResource(res);

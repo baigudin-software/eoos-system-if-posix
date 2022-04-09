@@ -69,16 +69,6 @@ public:
     }
 
     /**
-     * @copydoc eoos::api::Semaphore::acquire(int32_t)
-     */
-    bool_t acquire(int32_t permits) override
-    {
-        // @todo Implement through calling acquire() permits times under a mutex,
-        //       or investigate POSIX possobility to do so.
-        return false;
-    }
-
-    /**
      * @copydoc eoos::api::Semaphore::release()
      */
     void release() override
@@ -91,24 +81,6 @@ public:
                 setConstructed(false);
             }
         }
-    }
-
-    /**
-     * @copydoc eoos::api::Semaphore::release(int32_t)
-     */
-    void release(int32_t permits) override
-    {
-        // @todo Implement through calling post() permits times under a mutex,
-        //       or investigate POSIX possobility to do so.
-    }
-
-    /**
-     * @copydoc eoos::api::Semaphore::isFair()
-     */
-    bool_t isFair() const override
-    {
-        int const priority {::sched_getscheduler(0)};
-        return ( priority == SCHED_FIFO || priority == SCHED_RR) ? true : false;
     }
 
 private:
@@ -136,6 +108,7 @@ private:
             {
                 break;
             }
+			isFair_ = isFair();
             res = true;
         } while(false);
         return res;
@@ -152,7 +125,18 @@ private:
             delete sem_;
         }
     }
-    
+
+    /**
+     * @brief Test if semaphore is fair.
+     *
+     * @return Fairness flag.
+     */
+    bool_t isFair() const
+    {
+        int const priority {::sched_getscheduler(0)};
+        return ( priority == SCHED_FIFO || priority == SCHED_RR) ? true : false;
+    }
+
     /**
      * @brief Releases one permit.
      *
@@ -167,7 +151,12 @@ private:
             res = false;
         }
         return res;
-    }    
+    }
+
+    /**
+     * @brief Fairness flag.
+     */
+    bool_t isFair_ {false};
     
     /**
      * @brief Number of permits available.
