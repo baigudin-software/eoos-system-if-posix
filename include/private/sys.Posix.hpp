@@ -1,7 +1,7 @@
 /**
  * @file      sys.Posix.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2021-2022, Sergey Baigudin, Baigudin Software
  * 
  * @brief POSIX System includes and definitions.
  */

@@ -1,7 +1,7 @@
 /**
  * @file      sys.Semaphore.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2017-2022, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SEMAPHORE_HPP_
 #define SYS_SEMAPHORE_HPP_
@@ -20,7 +20,7 @@ namespace sys
  */
 class Semaphore : public NonCopyable, public api::Semaphore
 {
-    using Parent = NonCopyable;
+    typedef NonCopyable Parent;
 
 public:
 
@@ -30,15 +30,17 @@ public:
      * @param permits The initial number of permits available.
      */
     Semaphore(int32_t permits) : Parent(),
-        permits_ (permits){
-        bool_t const isConstructed { construct() };
+        isFair_ (false),    
+        permits_ (permits),
+        sem_ (NULLPTR){
+        bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
 
     /**
      * @brief Destructor.
      */
-    ~Semaphore() override
+    virtual ~Semaphore()
     {
         destruct();
     }
@@ -46,7 +48,7 @@ public:
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    bool_t isConstructed() const override
+    virtual bool_t isConstructed() const
     {
         return Parent::isConstructed();
     }
@@ -54,12 +56,12 @@ public:
     /**
      * @copydoc eoos::api::Semaphore::acquire()
      */
-    bool_t acquire() override
+    virtual bool_t acquire()
     {
-        bool_t res {false};
+        bool_t res(false);
         if( isConstructed() )
         {
-            int const error { ::sem_wait(sem_) };
+            int const error( ::sem_wait(sem_) );
             if(error == 0) 
             { 
                 res = true; 
@@ -71,11 +73,11 @@ public:
     /**
      * @copydoc eoos::api::Semaphore::release()
      */
-    void release() override
+    virtual void release()
     {
         if( isConstructed() )
         {
-            bool_t const isPosted { post() };
+            bool_t const isPosted( post() );
             if ( not isPosted )
             {
                 setConstructed(false);
@@ -90,20 +92,20 @@ private:
      *
      * @return true if object has been constructed successfully.
      */
-    bool_t construct()
+    bool_t construct() try
     {
-        bool_t res {false};
+        bool_t res(false);
         do {
             if( not isConstructed() )
             {
                 break;
             }
-            sem_ = new (nothrow) ::sem_t;
+            sem_ = new ::sem_t;
             if(sem_ == NULLPTR)
             {
                 break;
             }
-            int const error {::sem_init(sem_, 0, static_cast<unsigned int>(permits_))};
+            int const error( ::sem_init(sem_, 0, static_cast<unsigned int>(permits_)) );
             if(error != 0)
             {
                 break;
@@ -112,6 +114,8 @@ private:
             res = true;
         } while(false);
         return res;
+    } catch (...) {
+        return false;
     }
     
     /**
@@ -133,7 +137,7 @@ private:
      */
     bool_t isFair() const
     {
-        int const priority {::sched_getscheduler(0)};
+        int const priority( ::sched_getscheduler(0) );
         return ( priority == SCHED_FIFO || priority == SCHED_RR) ? true : false;
     }
 
@@ -144,8 +148,8 @@ private:
      */
     bool_t post()
     {
-        bool_t res{true};
-        int const error {::sem_post(sem_)};
+        bool_t res(true);
+        int const error( ::sem_post(sem_) );
         if (error != 0)
         {
             res = false;
@@ -156,19 +160,19 @@ private:
     /**
      * @brief Fairness flag.
      */
-    bool_t isFair_ {false};
+    bool_t isFair_;
     
     /**
      * @brief Number of permits available.
      */
-    int32_t permits_ {0};
+    int32_t permits_;
 
     /**
      * @brief Semaphore resource identifier.
      *
      * @todo Implement it as `sem_t`
      */
-    sem_t* sem_ {NULLPTR};    
+    sem_t* sem_;    
 
 };
         

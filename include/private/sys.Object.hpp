@@ -1,7 +1,7 @@
 /**
  * @file      sys.Object.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_OBJECT_HPP_
 #define SYS_OBJECT_HPP_
@@ -20,47 +20,51 @@ namespace sys
  */
 class Object : public ::eoos::Object<>
 {
-    using Parent = ::eoos::Object<>;
+    typedef ::eoos::Object<> Parent;
 
 public:
 
     /**
      * @brief Constructor.
      */
-    Object() noexcept : Parent() {}
+    Object() : Parent() {}
 
     /**
      * @brief Destructor.
      */
-    ~Object() noexcept override {}
+    virtual ~Object() {}
     
     /**
      * @copydoc eoos::Object::Object(const Object&)
      */
-    Object(const Object& obj) noexcept : Parent(obj) {} 
+    Object(const Object& obj) : Parent(obj) {} 
     
     /**
      * @copydoc eoos::Object::operator=(const Object&)
      */       
-    Object& operator=(const Object& obj) noexcept
+    Object& operator=(const Object& obj)
     {
         Parent::operator=(obj);
         return *this;
     }    
 
+    #if EOOS_CPP_STANDARD >= 2011
+
     /**
      * @copydoc eoos::Object::Object(const Object&&)
      */       
-    Object(Object&& obj) noexcept : Parent( lib::move(obj) ) {}
+    Object(Object&& obj) : Parent( lib::move(obj) ) {}
     
     /**
      * @copydoc eoos::Object::operator=(const Object&&)
      */
-    Object& operator=(Object&& obj) noexcept
+    Object& operator=(Object&& obj)
     {
         Parent::operator=( lib::move(obj) );
         return *this;
     }
+    
+    #endif // EOOS_CPP_STANDARD >= 2011    
 
 };
 

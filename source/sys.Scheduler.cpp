@@ -23,7 +23,7 @@ namespace
  */
 void sSleep(int32_t const s)
 {
-    unsigned int sec = static_cast<unsigned int>(s);
+    unsigned int sec( static_cast<unsigned int>(s) );
     while(sec != 0)
     {
         sec = ::sleep(sec);
@@ -38,11 +38,11 @@ void sSleep(int32_t const s)
  */
 bool_t msSleep(int32_t const ms)
 {
-    bool_t res {false};
+    bool_t res(false);
     if(0 < ms && ms < 1000)
     {
-        ::useconds_t const us { static_cast<::useconds_t>(ms * 1000) };
-        int const error { ::usleep(us) };
+        ::useconds_t const us( static_cast< ::useconds_t >(ms * 1000) );
+        int const error( ::usleep(us) );
         if(error == 0)
         {
             res = true;
@@ -53,6 +53,14 @@ bool_t msSleep(int32_t const ms)
 
 } // namespace
 
+Scheduler::Scheduler() 
+{
+}
+
+Scheduler::~Scheduler()
+{
+}
+    
 bool_t Scheduler::isConstructed() const
 {
     return Parent::isConstructed();
@@ -60,17 +68,17 @@ bool_t Scheduler::isConstructed() const
 
 api::Thread* Scheduler::createThread(api::Task& task)
 {
-    api::Thread* thread {NULLPTR};
+    api::Thread* thread(NULLPTR);
     if( isConstructed() )
     {
-        thread = new Thread {task};
+        thread = new Thread(task);
     }
     return thread;
 }
 
 bool_t Scheduler::sleep(int32_t ms)
 {
-    bool_t res {false};
+    bool_t res(false);
     if( isConstructed() )
     {
         int32_t time = ms / 1000;
@@ -85,7 +93,7 @@ void Scheduler::yield()
 {
     if( isConstructed() )
     {
-        int const error = ::sched_yield();
+        int const error( ::sched_yield() );
         if(error != 0)
         {
             setConstructed(false);

@@ -1,7 +1,7 @@
 /**
  * @file      sys.NonCopyable.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2021-2022, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_NONCOPYABLE_HPP_
 #define SYS_NONCOPYABLE_HPP_
@@ -19,41 +19,45 @@ namespace sys
  */
 class NonCopyable : public Object
 {
-    using Parent = Object;
+    typedef Object Parent;
 
 public:
 
     /**
      * @brief Constructor.
      */
-    NonCopyable() noexcept : Parent() {}
+    NonCopyable() : Parent() {}
 
     /**
      * @brief Destructor.
      */
-    ~NonCopyable() noexcept override {}
+    virtual ~NonCopyable() {}
     
 private:
     
     /**
-     * @copydoc eoos::Object::Object(const Object&)
+     * @copydoc eoos::Object::Object(Object const&)
      */
-    NonCopyable(const NonCopyable& obj) noexcept = delete;
+    NonCopyable(NonCopyable const& obj);
     
     /**
-     * @copydoc eoos::Object::operator=(const Object&)
+     * @copydoc eoos::Object::operator=(Object const&)
      */       
-    NonCopyable& operator=(const NonCopyable& obj) noexcept = delete;   
+    NonCopyable& operator=(NonCopyable const& obj);   
 
+    #if EOOS_CPP_STANDARD >= 2011
+    
     /**
-     * @copydoc eoos::Object::Object(const Object&&)
+     * @copydoc eoos::Object::Object(Object&&)
      */       
     NonCopyable(NonCopyable&& obj) noexcept = delete;
     
     /**
-     * @copydoc eoos::Object::operator=(const Object&&)
+     * @copydoc eoos::Object::operator=(Object&&)
      */
     NonCopyable& operator=(NonCopyable&& obj) noexcept = delete;
+
+    #endif // EOOS_CPP_STANDARD >= 2011
 
 };
 

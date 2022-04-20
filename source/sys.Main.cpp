@@ -23,11 +23,11 @@
 int main() try
 {
     ::eoos::sys::System eoos;
-    ::eoos::int32_t const error = eoos.execute();
+    ::eoos::int32_t const error( eoos.execute() );
     return static_cast<int>(error);
 } 
 catch (...) 
 {
     // Handle unexpected exceptions following MISRA-C++:2008 Rule 15–3–2 and AUTOSAR C++14 Rule A15-3-2
-    return static_cast<int>(::eoos::sys::Error::UNDEFINED);
+    return ::eoos::sys::ERROR_UNDEFINED;
 }

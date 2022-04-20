@@ -1,7 +1,7 @@
 /**
  * @file      sys.Thread.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_THREAD_HPP_
 #define SYS_THREAD_HPP_
@@ -21,7 +21,7 @@ namespace sys
  */
 class Thread : public NonCopyable, public api::Thread
 {
-    using Parent = NonCopyable;
+    typedef NonCopyable Parent;
 
 public:
 
@@ -31,15 +31,18 @@ public:
      * @param task A task interface whose main method is invoked when this thread is started.
      */
     Thread(api::Task& task) : Parent(),
-        task_ (&task){
-        bool_t const isConstructed  { construct() };
+        task_ (&task),
+        status_ (STATUS_NEW),
+        priority_ (PRIORITY_NORM),    
+        thread_ (0){
+        bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
 
     /**
      * @brief Destructor.
      */
-    ~Thread() override
+    virtual ~Thread()
     {
         if( thread_ != 0 )
         {
@@ -54,7 +57,7 @@ public:
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    bool_t isConstructed() const override
+    virtual bool_t isConstructed() const
     {
         return Parent::isConstructed();
     }
@@ -62,9 +65,9 @@ public:
     /**
      * @copydoc eoos::api::Thread::execute()
      */
-    bool_t execute() override
+    virtual bool_t execute()
     {
-        bool_t res {false};
+        bool_t res(false);
         do{
             if( not isConstructed() )
             {
@@ -74,9 +77,9 @@ public:
             {
                 break;
             }
-            int error {0};
+            int error(0);
             PthreadAttr pthreadAttr;
-            size_t const stackSize { task_->getStackSize() };
+            size_t const stackSize( task_->getStackSize() );
             if(stackSize != 0)
             {
                 error = ::pthread_attr_setstacksize(&pthreadAttr.attr, stackSize);
@@ -99,12 +102,12 @@ public:
     /**
      * @copydoc eoos::api::Thread::join()
      */
-    bool_t join() override
+    virtual bool_t join()
     {
-        bool_t res {false};    
+        bool_t res(false);    
         if( isConstructed() && status_ == STATUS_RUNNABLE )
         {
-            int const error {::pthread_join(thread_, NULL)};
+            int const error( ::pthread_join(thread_, NULL) );
             res = (error == 0) ? true : false;
             status_ = STATUS_DEAD;
         }
@@ -115,7 +118,7 @@ public:
     /**
      * @copydoc eoos::api::Thread::getPriority()
      */
-    int32_t getPriority() const override
+    virtual int32_t getPriority() const
     {
         return isConstructed() ? priority_ : PRIORITY_WRONG;        
     }
@@ -123,9 +126,9 @@ public:
     /**
      * @copydoc eoos::api::Thread::setPriority(int32_t)
      */
-    bool_t setPriority(int32_t priority) override
+    virtual bool_t setPriority(int32_t priority)
     {
-        bool_t res { false };
+        bool_t res( false );
         if( isConstructed() )
         {
             if( (PRIORITY_MIN <= priority) && (priority <= PRIORITY_MAX) )
@@ -156,7 +159,7 @@ private:
      */
     bool_t construct()
     {  
-        bool_t res {false};
+        bool_t res(false);
         do
         {
             if( not isConstructed() )
@@ -192,7 +195,7 @@ private:
         {
             return NULLPTR;
         }
-        api::Task* const task = { *reinterpret_cast<api::Task**>(argument) };
+        api::Task* const task( *reinterpret_cast<api::Task**>(argument) );
         if(task == NULLPTR)
         {
             return NULLPTR;
@@ -207,7 +210,7 @@ private:
         // initial thread.  The thread's cancelability type
         // determines when a cancelable thread will respond to a
         // cancellation request.
-        int error {::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype)};
+        int error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
         if(error != 0)
         {
             return NULLPTR;
@@ -255,22 +258,22 @@ private:
     /**
      * @brief User executing runnable interface.
      */
-    api::Task* task_ {NULLPTR};
+    api::Task* task_;
 
     /**
      * @brief Current status.
      */
-    Status status_ {STATUS_NEW};
+    Status status_;
     
     /**
      * @brief This thread priority.
      */    
-    int32_t priority_ {PRIORITY_NORM};    
+    int32_t priority_;    
     
     /**
      * @brief The new thread resource identifier.
      */
-    ::pthread_t thread_ {0};    
+    ::pthread_t thread_;    
 
 };
 

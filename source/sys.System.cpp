@@ -1,7 +1,7 @@
 /**
  * @file      sys.System.cpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
  */
 #include "sys.System.hpp"
 #include "sys.Mutex.hpp"
@@ -14,10 +14,10 @@ namespace eoos
 namespace sys
 {
         
-bool_t System::isInitialized_ {false};
+bool_t System::isInitialized_(false);
 
-System::System() : Parent()
-{
+System::System() : Parent(),
+    scheduler_ (){
     bool_t const isConstructed = construct();
     setConstructed( isConstructed );
 }
@@ -36,7 +36,7 @@ api::Scheduler& System::getScheduler() const
 {
     if( not isConstructed() )
     {
-        exit(Error::SYSCALL_CALLED);
+        exit(ERROR_SYSCALL_CALLED);
     }
     return scheduler_;
 }
@@ -58,7 +58,7 @@ int32_t System::execute()
     int32_t error;
     if( not isConstructed() )
     {
-        error = static_cast<int32_t>(Error::UNDEFINED);
+        error = static_cast<int32_t>(ERROR_UNDEFINED);
     }
     else
     {
@@ -70,7 +70,7 @@ int32_t System::execute()
 
 void System::exit(Error const error)
 {
-    const int STATUS_MASK {0xFF};
+    const int STATUS_MASK(0xFF);
     ::exit(static_cast<int>(error) & STATUS_MASK);
     // This code must NOT be executed
     // @todo throw an exection here is better.
@@ -80,7 +80,7 @@ void System::exit(Error const error)
 
 bool_t System::construct()
 {
-    bool_t res = isConstructed();
+    bool_t res( isConstructed() );
     while(res == true)
     {
         if( isInitialized_ )

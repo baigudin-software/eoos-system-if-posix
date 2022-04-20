@@ -11,11 +11,11 @@ namespace eoos
 namespace sys
 {
 
-static System* system_ {NULLPTR};
+static System* system_(NULLPTR);
 
 bool_t Call::initialize()
 {
-    bool_t isConstructed {false};
+    bool_t isConstructed(false);
     do {
         if(system_ != NULLPTR)
         {
@@ -54,7 +54,7 @@ api::System& Call::get()
 {
     if(system_ == NULLPTR)
     {
-        System::exit(Error::SYSTEM_ABORT);
+        System::exit(ERROR_SYSTEM_ABORT);
     }
     return *system_;
 }

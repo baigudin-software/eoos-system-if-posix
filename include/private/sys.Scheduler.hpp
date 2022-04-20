@@ -20,39 +20,39 @@ namespace sys
  */
 class Scheduler : public NonCopyable, public api::Scheduler
 {
-    using Parent = NonCopyable;
+    typedef NonCopyable Parent;
 
 public:
 
     /**
      * @brief Constructor.
      */
-    Scheduler() = default;
+    Scheduler();
 
     /**
      * @brief Destructor.
      */
-    ~Scheduler() override = default;
+    virtual ~Scheduler();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    bool_t isConstructed() const override;
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::Scheduler::createThread(api::Task&)
      */     
-    api::Thread* createThread(api::Task& task) override;
+    virtual api::Thread* createThread(api::Task& task);
     
     /**
      * @copydoc eoos::api::Scheduler::sleep(int32_t)
      */
-    bool_t sleep(int32_t ms) override;
+    virtual bool_t sleep(int32_t ms);
 
     /**
      * @copydoc eoos::api::Scheduler::yield()
      */
-    void yield() override;
+    virtual void yield();
     
 };
 

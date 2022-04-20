@@ -1,7 +1,7 @@
 /**
  * @file      sys.System.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SYSTEM_HPP_
 #define SYS_SYSTEM_HPP_
@@ -22,7 +22,7 @@ namespace sys
  */
 class System : public NonCopyable, public api::System
 {
-    using Parent = NonCopyable;
+    typedef NonCopyable Parent;
 
 public:
 
@@ -34,27 +34,27 @@ public:
     /**
      * @brief Destructor.
      */
-    ~System() override;
+    virtual ~System();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    bool_t isConstructed() const override;
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::System::getScheduler()
      */
-    api::Scheduler& getScheduler() const override;
+    virtual api::Scheduler& getScheduler() const;
 
     /**
      * @copydoc eoos::api::System::createMutex()
      */
-    api::Mutex* createMutex() override;
+    virtual api::Mutex* createMutex();
 
     /**
      * @copydoc eoos::api::System::creatSemaphore(int32_t)
      */
-    api::Semaphore* createSemaphore(int32_t permits) override;
+    virtual api::Semaphore* createSemaphore(int32_t permits);
 
     /**
      * @brief Executes the operating system.
@@ -108,7 +108,7 @@ private:
     /**
      * @brief The operating system scheduler.
      */
-    mutable Scheduler scheduler_ {};
+    mutable Scheduler scheduler_;
 
 };
 
