@@ -35,3 +35,4 @@ Release
 *.bak
 *.iex
 *.__i
+/build/

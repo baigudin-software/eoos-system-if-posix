@@ -61,7 +61,7 @@ public:
         bool_t res(false);
         if( isConstructed() )
         {
-            int const error( ::sem_wait(sem_) );
+            int_t const error( ::sem_wait(sem_) );
             if(error == 0) 
             { 
                 res = true; 
@@ -105,7 +105,7 @@ private:
             {
                 break;
             }
-            int const error( ::sem_init(sem_, 0, static_cast<unsigned int>(permits_)) );
+            int_t const error( ::sem_init(sem_, 0, static_cast<uint_t >(permits_)) );
             if(error != 0)
             {
                 break;
@@ -125,7 +125,7 @@ private:
     {
         if(sem_ != NULLPTR)
         {
-            ::sem_destroy(sem_);
+            static_cast<void>( ::sem_destroy(sem_) );
             delete sem_;
         }
     }
@@ -137,8 +137,8 @@ private:
      */
     bool_t isFair() const
     {
-        int const priority( ::sched_getscheduler(0) );
-        return ( priority == SCHED_FIFO || priority == SCHED_RR) ? true : false;
+        int_t const priority( ::sched_getscheduler(0) );
+        return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;
     }
 
     /**
@@ -149,7 +149,7 @@ private:
     bool_t post()
     {
         bool_t res(true);
-        int const error( ::sem_post(sem_) );
+        int_t const error( ::sem_post(sem_) );
         if (error != 0)
         {
             res = false;

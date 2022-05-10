@@ -20,6 +20,10 @@ namespace eoos
 namespace sys
 {
 
+// POSIX used redefined types to comply MISRA-C++:2008
+typedef int    			int_t;
+typedef unsigned int    uint_t;
+
 #if EOOS_CPP_STANDARD >= 2011
 
 /**

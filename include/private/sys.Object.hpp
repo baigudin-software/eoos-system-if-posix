@@ -44,7 +44,7 @@ public:
      */       
     Object& operator=(const Object& obj)
     {
-        Parent::operator=(obj);
+        static_cast<void>( Parent::operator=(obj) );
         return *this;
     }    
 

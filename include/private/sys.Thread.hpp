@@ -44,12 +44,12 @@ public:
      */
     virtual ~Thread()
     {
-        if( thread_ != 0 )
+        if( thread_ != 0U )
         {
             // @todo The thread detaching means the thread will still be executed by OS.
             // Thus, to keep compatibility, common approach for all OSs shall be found
             // for using pthread_cancel function to cancel the thread execution forcely.
-            ::pthread_detach(thread_);
+            static_cast<void>( ::pthread_detach(thread_) );
             status_ = STATUS_DEAD;            
         }
     }
@@ -77,10 +77,10 @@ public:
             {
                 break;
             }
-            int error(0);
+            int_t error(0);
             PthreadAttr pthreadAttr;
             size_t const stackSize( task_->getStackSize() );
-            if(stackSize != 0)
+            if(stackSize != 0U)
             {
                 error = ::pthread_attr_setstacksize(&pthreadAttr.attr, stackSize);
                 if(error != 0)
@@ -105,9 +105,9 @@ public:
     virtual bool_t join()
     {
         bool_t res(false);    
-        if( isConstructed() && status_ == STATUS_RUNNABLE )
+        if( isConstructed() && (status_ == STATUS_RUNNABLE) )
         {
-            int const error( ::pthread_join(thread_, NULL) );
+            int_t const error( ::pthread_join(thread_, NULL) );
             res = (error == 0) ? true : false;
             status_ = STATUS_DEAD;
         }
@@ -204,13 +204,13 @@ private:
         {
             return NULLPTR;
         }        
-        int oldtype;
+        int_t oldtype;
         // The thread is cancelable.  This is the default
         // cancelability state in all new threads, including the
         // initial thread.  The thread's cancelability type
         // determines when a cancelable thread will respond to a
         // cancellation request.
-        int error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
+        int_t error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
         if(error != 0)
         {
             return NULLPTR;
@@ -243,7 +243,7 @@ private:
          */        
         PthreadAttr()
         {
-            ::pthread_attr_init(&attr);
+            static_cast<void>( ::pthread_attr_init(&attr) );
         }
         
         /**
@@ -251,7 +251,7 @@ private:
          */        
         ~PthreadAttr()
         {
-            ::pthread_attr_destroy(&attr);
+            static_cast<void>( ::pthread_attr_destroy(&attr) );
         }        
     };    
     

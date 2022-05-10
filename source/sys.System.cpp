@@ -70,12 +70,11 @@ int32_t System::execute()
 
 void System::exit(Error const error)
 {
-    const int STATUS_MASK(0xFF);
-    ::exit(static_cast<int>(error) & STATUS_MASK);
+    ::exit( static_cast<int_t>(error) );
     // This code must NOT be executed
     // @todo throw an exection here is better.
     volatile bool_t const isTerminated = true;
-    while( isTerminated ){};
+    while( isTerminated ) {}
 }
 
 bool_t System::construct()

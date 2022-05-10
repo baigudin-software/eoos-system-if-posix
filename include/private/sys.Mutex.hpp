@@ -57,7 +57,7 @@ public:
         bool_t res(false);
         if( isConstructed() )
         {
-            int const error = ::pthread_mutex_trylock(mutex_);
+            int_t const error = ::pthread_mutex_trylock(mutex_);
             res = (error == 0) ? true : false;
         }
         return res;
@@ -71,7 +71,7 @@ public:
         bool_t res(false);
         if( isConstructed() )
         {
-            int const error( ::pthread_mutex_lock(mutex_) );
+            int_t const error( ::pthread_mutex_lock(mutex_) );
             res = (error == 0) ? true : false;
         }
         return res;
@@ -84,7 +84,7 @@ public:
     {
         if( isConstructed() )
         {
-            int const error( ::pthread_mutex_unlock(mutex_) );
+            int_t const error( ::pthread_mutex_unlock(mutex_) );
             if (error != 0)
             {
                 setConstructed(false);
@@ -108,12 +108,13 @@ private:
             {
                 break;
             }
+            // @todo Revise possobility to avoud memory allocation here.
             mutex_ = new ::pthread_mutex_t;
             if(mutex_ == NULLPTR)
             {
                 break;
             }
-            int const error( ::pthread_mutex_init(mutex_, NULL) );
+            int_t const error( ::pthread_mutex_init(mutex_, NULL) );
             if(error != 0)
             {
                 break;
@@ -132,7 +133,7 @@ private:
     {
         if(mutex_ != NULLPTR)
         {
-            ::pthread_mutex_destroy(mutex_);
+            static_cast<void>( ::pthread_mutex_destroy(mutex_) );
             delete mutex_;
         }        
     }
