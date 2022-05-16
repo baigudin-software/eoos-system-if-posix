@@ -27,7 +27,7 @@ public:
     /**
      * @brief Constructor.
      */
-    Mutex() : Parent(),
+    Mutex() : NonCopyable(), api::Mutex(),
         mutex_ (NULLPTR){
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
@@ -44,7 +44,7 @@ public:
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const 
+    virtual bool_t isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
     {
         return Parent::isConstructed();
     }
@@ -129,7 +129,7 @@ private:
     /**
      * @brief Destructs this object.
      */
-    void destruct()
+    void destruct() const
     {
         if(mutex_ != NULLPTR)
         {

@@ -30,7 +30,7 @@ public:
      *
      * @param task A task interface whose main method is invoked when this thread is started.
      */
-    Thread(api::Task& task) : Parent(),
+    Thread(api::Task& task) : NonCopyable(), api::Thread(),
         task_ (&task),
         status_ (STATUS_NEW),
         priority_ (PRIORITY_NORM),    
@@ -57,7 +57,7 @@ public:
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
+    virtual bool_t isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
     {
         return Parent::isConstructed();
     }
@@ -78,7 +78,7 @@ public:
                 break;
             }
             int_t error(0);
-            PthreadAttr pthreadAttr;
+            PthreadAttr pthreadAttr; ///< SCA MISRA-C++:2008 Justified Rule 9-5-1
             size_t const stackSize( task_->getStackSize() );
             if(stackSize != 0U)
             {
@@ -88,7 +88,7 @@ public:
                     break;
                 }
             }
-            error = ::pthread_create(&thread_, &pthreadAttr.attr, start, &task_);
+            error = ::pthread_create(&thread_, &pthreadAttr.attr, &start, &task_);
             if(error != 0)
             {
                 break;
@@ -236,7 +236,7 @@ private:
         /**
          * @brief Attributes of the pthread_create function.
          */
-        ::pthread_attr_t attr;
+        ::pthread_attr_t attr; ///< SCA MISRA-C++:2008 Justified Rule 9-5-1 and Rule 11-0-1
         
         /**
          * @brief Constructor of not constructed object.

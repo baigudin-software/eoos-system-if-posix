@@ -44,7 +44,7 @@ public:
     /**
      * @copydoc eoos::api::System::getScheduler()
      */
-    virtual api::Scheduler& getScheduler() const;
+    virtual api::Scheduler& getScheduler();
 
     /**
      * @copydoc eoos::api::System::createMutex()
@@ -61,7 +61,7 @@ public:
      *
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute();
+    int32_t execute() const;
 
     /**
      * @brief Terminates the system execution.
@@ -77,7 +77,7 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct();
+    bool_t construct() const;
 
     /**
      * @brief Proves a resource.

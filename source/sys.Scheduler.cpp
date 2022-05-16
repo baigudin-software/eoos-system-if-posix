@@ -53,20 +53,20 @@ bool_t msSleep(int32_t const ms)
 
 } // namespace
 
-Scheduler::Scheduler() 
+Scheduler::Scheduler() : NonCopyable(), api::Scheduler()
 {
 }
 
-Scheduler::~Scheduler()
+Scheduler::~Scheduler() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
 }
     
-bool_t Scheduler::isConstructed() const
+bool_t Scheduler::isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1 and Defected Rule 10-3-2
 {
     return Parent::isConstructed();
 }
 
-api::Thread* Scheduler::createThread(api::Task& task)
+api::Thread* Scheduler::createThread(api::Task& task) ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     api::Thread* thread(NULLPTR);
     if( isConstructed() )
@@ -76,7 +76,7 @@ api::Thread* Scheduler::createThread(api::Task& task)
     return thread;
 }
 
-bool_t Scheduler::sleep(int32_t ms)
+bool_t Scheduler::sleep(int32_t ms) ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     bool_t res(false);
     if( isConstructed() )
@@ -89,7 +89,7 @@ bool_t Scheduler::sleep(int32_t ms)
     return res;
 }
 
-void Scheduler::yield()
+void Scheduler::yield() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( isConstructed() )
     {

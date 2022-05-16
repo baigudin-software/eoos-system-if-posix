@@ -24,7 +24,7 @@ int main() try
 {
     ::eoos::sys::System eoos;
     ::eoos::int32_t const error( eoos.execute() );
-    return static_cast<int>(error); ///< SCA Justificated MISRA-C++:2008 Rule 3-9-2
+    return static_cast<int>(error); ///< SCA MISRA-C++:2008 Justified Rule 3-9-2
 } 
 catch (...) 
 {

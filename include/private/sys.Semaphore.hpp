@@ -29,8 +29,8 @@ public:
      *
      * @param permits The initial number of permits available.
      */
-    Semaphore(int32_t permits) : Parent(),
-        isFair_ (false),    
+    explicit Semaphore(int32_t permits) : NonCopyable(), api::Semaphore(),
+        isFair_ (false),
         permits_ (permits),
         sem_ (NULLPTR){
         bool_t const isConstructed( construct() );
@@ -48,7 +48,7 @@ public:
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
+    virtual bool_t isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
     {
         return Parent::isConstructed();
     }
@@ -121,7 +121,7 @@ private:
     /**
      * @brief Destructs this object.
      */
-    void destruct()
+    void destruct() const
     {
         if(sem_ != NULLPTR)
         {
@@ -135,7 +135,7 @@ private:
      *
      * @return Fairness flag.
      */
-    bool_t isFair() const
+    static bool_t isFair()
     {
         int_t const priority( ::sched_getscheduler(0) );
         return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;
@@ -146,7 +146,7 @@ private:
      *
      * @return True on success.
      */
-    bool_t post()
+    bool_t post() const
     {
         bool_t res(true);
         int_t const error( ::sem_post(sem_) );
