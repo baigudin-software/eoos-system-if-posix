@@ -80,27 +80,6 @@ private:
     bool_t construct() const;
 
     /**
-     * @brief Proves a resource.
-     *
-     * @tparam T Resource type.
-     * @param res A resource.
-     * @return A passed resource, or NULLPTR if the resource has not been approved.
-     */
-    template <class T>
-    static T* proveResource(T* res)
-    {
-        if(res != NULLPTR)
-        {
-            if( not res->isConstructed() )
-            {
-                delete res;
-                res = NULLPTR;
-            }
-        }
-        return res;
-    }
-
-    /**
      * @brief The operating system initialization flag.
      */
     static bool_t isInitialized_;

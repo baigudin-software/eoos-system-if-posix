@@ -15,7 +15,7 @@ static System* system_(NULLPTR);
 
 bool_t Call::initialize()
 {
-    bool_t isConstructed(false);
+    bool_t isConstructed( false );
     do {
         if(system_ != NULLPTR)
         {
@@ -27,7 +27,7 @@ bool_t Call::initialize()
             break;
         }
         isConstructed = system_->isConstructed();
-        if( not isConstructed )
+        if( !isConstructed )
         {
             delete system_;
             system_ = NULLPTR;

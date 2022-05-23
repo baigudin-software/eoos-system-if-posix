@@ -30,11 +30,13 @@ public:
      *
      * @param task A task interface whose main method is invoked when this thread is started.
      */
-    Thread(api::Task& task) : NonCopyable(), api::Thread(),
-        task_ (&task),
-        status_ (STATUS_NEW),
-        priority_ (PRIORITY_NORM),    
-        thread_ (0){
+    Thread(api::Task& task) 
+        : NonCopyable()
+        , api::Thread()
+        , task_ (&task)
+        , status_ (STATUS_NEW)
+        , priority_ (PRIORITY_NORM)
+        , thread_ (0) {
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
@@ -67,9 +69,9 @@ public:
      */
     virtual bool_t execute()
     {
-        bool_t res(false);
+        bool_t res( false );
         do{
-            if( not isConstructed() )
+            if( !isConstructed() )
             {
                 break;
             }
@@ -77,7 +79,7 @@ public:
             {
                 break;
             }
-            int_t error(0);
+            int_t error( 0 );
             PthreadAttr pthreadAttr; ///< SCA MISRA-C++:2008 Justified Rule 9-5-1
             size_t const stackSize( task_->getStackSize() );
             if(stackSize != 0U)
@@ -104,7 +106,7 @@ public:
      */
     virtual bool_t join()
     {
-        bool_t res(false);    
+        bool_t res( false );    
         if( isConstructed() && (status_ == STATUS_RUNNABLE) )
         {
             int_t const error( ::pthread_join(thread_, NULL) );
@@ -159,10 +161,10 @@ private:
      */
     bool_t construct()
     {  
-        bool_t res(false);
+        bool_t res( false );
         do
         {
-            if( not isConstructed() )
+            if( !isConstructed() )
             {
                 break;
             }
@@ -170,7 +172,7 @@ private:
             {
                 break;
             }
-            if( not task_->isConstructed() )
+            if( !task_->isConstructed() )
             {
                 break;
             }
@@ -200,7 +202,7 @@ private:
         {
             return NULLPTR;
         }
-        if(not task->isConstructed() )
+        if( !task->isConstructed() )
         {
             return NULLPTR;
         }        

@@ -26,7 +26,9 @@ public:
     /**
      * @brief Constructor.
      */
-    NonCopyable() : Parent() {}
+    NonCopyable() 
+        : Object() {
+    }
 
     /**
      * @brief Destructor.

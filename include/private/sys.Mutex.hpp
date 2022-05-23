@@ -27,8 +27,10 @@ public:
     /**
      * @brief Constructor.
      */
-    Mutex() : NonCopyable(), api::Mutex(),
-        mutex_ (NULLPTR){
+    Mutex() 
+        : NonCopyable()
+        , api::Mutex()
+        , mutex_( NULLPTR ) {
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
@@ -54,10 +56,10 @@ public:
      */
     virtual bool_t tryLock()
     {
-        bool_t res(false);
+        bool_t res( false );
         if( isConstructed() )
         {
-            int_t const error = ::pthread_mutex_trylock(mutex_);
+            int_t const error( ::pthread_mutex_trylock(mutex_) );
             res = (error == 0) ? true : false;
         }
         return res;
@@ -68,7 +70,7 @@ public:
      */
     virtual bool_t lock()
     {
-        bool_t res(false);
+        bool_t res( false );
         if( isConstructed() )
         {
             int_t const error( ::pthread_mutex_lock(mutex_) );
@@ -104,7 +106,7 @@ private:
         bool_t res( false );
         do
         {   
-            if( not isConstructed() )
+            if( !isConstructed() )
             {
                 break;
             }

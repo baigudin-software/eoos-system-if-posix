@@ -29,10 +29,12 @@ public:
      *
      * @param permits The initial number of permits available.
      */
-    explicit Semaphore(int32_t permits) : NonCopyable(), api::Semaphore(),
-        isFair_ (false),
-        permits_ (permits),
-        sem_ (NULLPTR){
+    explicit Semaphore(int32_t permits) 
+        : NonCopyable()
+        , api::Semaphore()
+        , isFair_(false)
+        , permits_(permits)
+        , sem_(NULLPTR){
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
@@ -58,7 +60,7 @@ public:
      */
     virtual bool_t acquire()
     {
-        bool_t res(false);
+        bool_t res( false );
         if( isConstructed() )
         {
             int_t const error( ::sem_wait(sem_) );
@@ -78,7 +80,7 @@ public:
         if( isConstructed() )
         {
             bool_t const isPosted( post() );
-            if ( not isPosted )
+            if ( !isPosted )
             {
                 setConstructed(false);
             }
@@ -94,9 +96,9 @@ private:
      */
     bool_t construct() try
     {
-        bool_t res(false);
+        bool_t res( false );
         do {
-            if( not isConstructed() )
+            if( !isConstructed() )
             {
                 break;
             }
@@ -148,7 +150,7 @@ private:
      */
     bool_t post() const
     {
-        bool_t res(true);
+        bool_t res( true );
         int_t const error( ::sem_post(sem_) );
         if (error != 0)
         {

@@ -1,12 +1,11 @@
 /**
  * @file      sys.Scheduler.cpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2016-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2016-2022, Sergey Baigudin, Baigudin Software
  */
 #include "sys.Scheduler.hpp"
 #include "sys.Thread.hpp"
-#include <pthread.h>
-#include <sys/types.h>
+#include "lib.UniquePointer.hpp"
 
 namespace eoos
 {
@@ -38,7 +37,7 @@ void sSleep(int32_t const s)
  */
 bool_t msSleep(int32_t const ms)
 {
-    bool_t res(false);
+    bool_t res( false );
     if( (0 < ms) && (ms < 1000) )
     {
         ::useconds_t const us( static_cast< ::useconds_t >(ms) * 1000U );
@@ -53,8 +52,9 @@ bool_t msSleep(int32_t const ms)
 
 } // namespace
 
-Scheduler::Scheduler() : NonCopyable(), api::Scheduler()
-{
+Scheduler::Scheduler() 
+    : NonCopyable()
+    , api::Scheduler() {
 }
 
 Scheduler::~Scheduler() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
@@ -68,20 +68,28 @@ bool_t Scheduler::isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 1
 
 api::Thread* Scheduler::createThread(api::Task& task) ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
-    api::Thread* thread(NULLPTR);
+    api::Thread* ptr( NULLPTR );
     if( isConstructed() )
     {
-        thread = new Thread(task);
-    }
-    return thread;
+        lib::UniquePointer<api::Thread> res( new Thread(task) );
+        if( !res.isNull() )
+        {
+            if( !res->isConstructed() )
+            {
+                res.reset();
+            }
+        }
+        ptr = res.release();
+    }    
+    return ptr;
 }
 
 bool_t Scheduler::sleep(int32_t ms) ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
-    bool_t res(false);
+    bool_t res( false );
     if( isConstructed() )
     {
-        int32_t time = ms / 1000;
+        int32_t time( ms / 1000 );
         sSleep(time);
         time = ms % 1000;
         res = msSleep(time);
