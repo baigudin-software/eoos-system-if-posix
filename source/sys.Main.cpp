@@ -15,15 +15,14 @@
  * 4. Global variables have been set.
  * 5. Global constructors have been called.
  *
+ * @param argc The number of arguments passed to the program.
+ * @param argv An array of c-string of arguments where the last one - argc + 1 is null. 
  * @return error code or zero.
- *
- * @todo Add the arguments to the function.
- * @todo Revise to remove the function at all as for now it won't work at all!
  */
-int main() try
+int main(int const argc, char** const argv) try
 {
     ::eoos::sys::System eoos;
-    ::eoos::int32_t const error( eoos.execute() );
+    ::eoos::int32_t const error( eoos.execute(argc, argv) );
     return static_cast<int>(error); ///< SCA MISRA-C++:2008 Justified Rule 3-9-2
 } 
 catch (...) 

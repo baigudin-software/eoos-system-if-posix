@@ -6,7 +6,7 @@
 #ifndef SYS_OBJECT_HPP_
 #define SYS_OBJECT_HPP_
 
-#include "Object.hpp"
+#include "lib.Object.hpp"
 #include "sys.Types.hpp"
 
 namespace eoos
@@ -18,9 +18,9 @@ namespace sys
  * @class Object
  * @brief Root class of the operating system class hierarchy.
  */
-class Object : public ::eoos::Object<>
+class Object : public lib::Object<>
 {
-    typedef ::eoos::Object<> Parent;
+    typedef lib::Object<> Parent;
 
 public:
 
@@ -28,7 +28,7 @@ public:
      * @brief Constructor.
      */
     Object()
-        : ::eoos::Object<>() {
+        : lib::Object<>() {
     }
 
     /**
@@ -40,7 +40,7 @@ public:
      * @copydoc eoos::Object::Object(const Object&)
      */
     Object(const Object& obj) 
-        : ::eoos::Object<>(obj) {
+        : lib::Object<>(obj) {
     } 
     
     /**
@@ -58,7 +58,7 @@ public:
      * @copydoc eoos::Object::Object(const Object&&)
      */       
     Object(Object&& obj) 
-        : ::eoos::Object<>( lib::move(obj) ) {
+        : lib::Object<>( lib::move(obj) ) {
     }
     
     /**

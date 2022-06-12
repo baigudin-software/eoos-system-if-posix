@@ -9,6 +9,7 @@
 #include "sys.NonCopyable.hpp"
 #include "api.System.hpp"
 #include "sys.Scheduler.hpp"
+#include "sys.Heap.hpp"
 #include "sys.Error.hpp"
 
 namespace eoos
@@ -47,6 +48,11 @@ public:
     virtual api::Scheduler& getScheduler();
 
     /**
+     * @copydoc eoos::api::System::getHeap()
+     */
+    virtual api::Heap& getHeap();
+
+    /**
      * @copydoc eoos::api::System::createMutex()
      */
     virtual api::Mutex* createMutex();
@@ -62,13 +68,22 @@ public:
      * @return Zero, or error code if the execution has been terminated.
      */
     int32_t execute() const;
+    
+    /**
+     * @brief Executes the operating system.
+     *
+     * @param argc The number of arguments passed to the program.
+     * @param argv An array of c-string of arguments where the last one - argc + 1 is null.  
+     * @return Zero, or error code if the execution has been terminated.
+     */
+    int32_t execute(int32_t argc, char_t* argv[]) const;
 
     /**
-     * @brief Terminates the system execution.
+     * @brief Returns an only one created instance of the EOOS system.
      *
-     * @param Error an exit code.
+     * @return The EOOS system instance.
      */
-    static void exit(Error error);
+    static api::System& getSystem();
 
 private:
 
@@ -77,17 +92,64 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct() const;
+    bool_t construct();
+
+    #ifdef EOOS_NO_STRICT_MISRA_RULES
 
     /**
-     * @brief The operating system initialization flag.
+     * @brief Operator new.
+     *
+     * @note Prohibited to be called as no system heap is initialized till the operation.
+     *
+     * @param size A number of bytes to allocate.
+     * @return Allocated memory address or a null pointer.
      */
-    static bool_t isInitialized_;
+    static void* operator new(size_t);
+    
+    /**
+     * @brief Operator delete.
+     *
+     * @note Prohibited to be called as no system heap is initialized till the operation.
+     *
+     * @param ptr An address of allocated memory block or a null pointer.
+     */
+    static void operator delete(void*);
+
+    /**
+     * @brief Returns nullptr.
+     *
+     * The function is defined just to avoid G++ warning: 
+     * ‘operator new’ must not return NULL unless it is declared ‘throw()’
+     * as the EOOS POSIX has to be compiled with C++98 and therefore
+     * operator new(std::size_t, std::nothrow_t const&) cannot be declared.
+     *
+     * @return nullptr.
+     */
+    static void* getNullptr();
+
+    #endif // EOOS_NO_STRICT_MISRA_RULES
+    
+    /**
+     * @brief Terminates the system execution.
+     *
+     * @param Error an exit code.
+     */
+    static void exit(Error error);    
+
+    /**
+     * @brief The operating system.
+     */
+    static api::System* eoos_;
     
     /**
      * @brief The operating system scheduler.
      */
     mutable Scheduler scheduler_;
+
+    /**
+     * @brief The system heap.
+     */
+    mutable Heap heap_;    
 
 };
 

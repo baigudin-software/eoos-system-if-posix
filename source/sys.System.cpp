@@ -14,20 +14,21 @@ namespace eoos
 {
 namespace sys
 {
-        
-bool_t System::isInitialized_(false);
+
+api::System* System::eoos_( NULLPTR );
 
 System::System() 
     : NonCopyable()
     , api::System()
-    , scheduler_() {
+    , scheduler_()
+    , heap_() {
     bool_t const isConstructed( construct() );
     setConstructed( isConstructed );
 }
 
 System::~System() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
-    isInitialized_ = false;
+    eoos_ = NULLPTR;
 }
 
 bool_t System::isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1 and Defected Rule 10-3-2
@@ -44,6 +45,15 @@ api::Scheduler& System::getScheduler() ///< SCA MISRA-C++:2008 Defected Rule 10-
     return scheduler_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
+api::Heap& System::getHeap()
+{
+    if( !isConstructed() )
+    {
+        exit(ERROR_SYSCALL_CALLED);
+    }
+    return heap_;
+}
+    
 api::Mutex* System::createMutex() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     api::Mutex* ptr( NULLPTR );
@@ -82,6 +92,11 @@ api::Semaphore* System::createSemaphore(int32_t permits) ///< SCA MISRA-C++:2008
 
 int32_t System::execute() const
 {
+    return execute(0, NULLPTR);
+}
+    
+int32_t System::execute(int32_t argc, char_t* argv[]) const
+{
     int32_t error;
     if( !isConstructed() )
     {
@@ -90,11 +105,42 @@ int32_t System::execute() const
     else
     {
         lib::LinkedList<char_t*> args;
-        error = Program::start(&args);
+        for(int32_t i(0); i<argc; i++)
+        {
+            args.add(argv[i]);
+        }
+        error = Program::start(args);        
     }
     return error;
 }
 
+api::System& System::getSystem()
+{
+    if(eoos_ == NULLPTR)
+    {
+        exit(ERROR_SYSCALL_CALLED);
+    }
+    return *eoos_;
+}
+    
+#ifdef EOOS_NO_STRICT_MISRA_RULES
+
+void* System::operator new(size_t)
+{
+    return getNullptr();
+}
+
+void System::operator delete(void*)
+{
+}
+
+void* System::getNullptr()
+{
+    return NULLPTR;
+}
+    
+#endif // EOOS_NO_STRICT_MISRA_RULES
+    
 void System::exit(Error const error)
 {
     ::exit( static_cast<int_t>(error) );
@@ -103,12 +149,12 @@ void System::exit(Error const error)
     while( true ) {}
 }
 
-bool_t System::construct() const
+bool_t System::construct()
 {
     bool_t res( isConstructed() );
     while(res == true)
     {
-        if( isInitialized_ )
+        if( eoos_ != NULLPTR )
         {
             res = false;
             continue;
@@ -118,7 +164,12 @@ bool_t System::construct() const
             res = false;
             continue;
         }
-        isInitialized_ = true;
+        if( !heap_.isConstructed() )
+        {
+            res = false;
+            continue;
+        }
+        eoos_ = this;
         break;
     }
     return res;
