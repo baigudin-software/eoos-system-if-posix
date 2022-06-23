@@ -21,7 +21,9 @@ System::System()
     : NonCopyable()
     , api::System()
     , scheduler_()
-    , heap_() {
+    , heap_() 
+    , cout_(OutStreamChar::TYPE_OUT) 
+    , cerr_(OutStreamChar::TYPE_ERR) {
     bool_t const isConstructed( construct() );
     setConstructed( isConstructed );
 }
@@ -53,7 +55,25 @@ api::Heap& System::getHeap()
     }
     return heap_;
 }
-    
+
+api::OutStream<char_t>& System::getOutStreamChar()
+{
+    if( !isConstructed() )
+    {
+        exit(ERROR_SYSCALL_CALLED);
+    }
+    return cout_;
+}
+
+api::OutStream<char_t>& System::getErrorStreamChar()
+{
+    if( !isConstructed() )
+    {
+        exit(ERROR_SYSCALL_CALLED);
+    }
+    return cerr_;
+}
+
 api::Mutex* System::createMutex() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     api::Mutex* ptr( NULLPTR );

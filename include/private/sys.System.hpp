@@ -10,6 +10,7 @@
 #include "api.System.hpp"
 #include "sys.Scheduler.hpp"
 #include "sys.Heap.hpp"
+#include "sys.OutStreamChar.hpp"
 #include "sys.Error.hpp"
 
 namespace eoos
@@ -51,6 +52,16 @@ public:
      * @copydoc eoos::api::System::getHeap()
      */
     virtual api::Heap& getHeap();
+    
+    /**
+     * @copydoc eoos::api::System::getOutStreamChar()
+     */    
+    virtual api::OutStream<char_t>& getOutStreamChar();
+
+    /**
+     * @copydoc eoos::api::System::getErrorStreamChar()
+     */    
+    virtual api::OutStream<char_t>& getErrorStreamChar();    
 
     /**
      * @copydoc eoos::api::System::createMutex()
@@ -150,6 +161,16 @@ private:
      * @brief The system heap.
      */
     mutable Heap heap_;    
+
+    /**
+     * @brief The system output character stream.
+     */
+    OutStreamChar cout_;
+    
+    /**
+     * @brief The system error character stream.
+     */
+    OutStreamChar cerr_;
 
 };
 
