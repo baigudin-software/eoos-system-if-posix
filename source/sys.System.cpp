@@ -30,6 +30,8 @@ System::System()
 
 System::~System() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
+    cout_.flush();
+    cerr_.flush();
     eoos_ = NULLPTR;
 }
 
