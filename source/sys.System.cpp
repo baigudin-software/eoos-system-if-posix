@@ -22,8 +22,8 @@ System::System()
     , api::System()
     , scheduler_()
     , heap_() 
-    , cout_(OutStreamChar::TYPE_OUT) 
-    , cerr_(OutStreamChar::TYPE_ERR) {
+    , cout_(OutStreamChar::TYPE_COUT) 
+    , cerr_(OutStreamChar::TYPE_CERR) {
     bool_t const isConstructed( construct() );
     setConstructed( isConstructed );
 }

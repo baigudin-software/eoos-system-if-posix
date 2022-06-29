@@ -14,5 +14,6 @@
 #include <semaphore.h>
 #include <sched.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #endif // SYS_POSIX_HPP_

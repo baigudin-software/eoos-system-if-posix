@@ -31,8 +31,8 @@ public:
      */
     enum Type
     {
-        TYPE_OUT, ///< @brief COUT
-        TYPE_ERR  ///< @brief CERR
+        TYPE_COUT, ///< @brief COUT
+        TYPE_CERR  ///< @brief CERR
     };
 
     /**
@@ -43,8 +43,8 @@ public:
     OutStreamChar(Type type) 
         : NonCopyable()
         , api::OutStream<char_t>()
-        , type_( type ) {
-        bool_t const isConstructed( construct() );
+        , stream_( NULLPTR ) {
+        bool_t const isConstructed( construct(type) );
         setConstructed( isConstructed );
     }
 
@@ -70,6 +70,7 @@ public:
     {
         if( isConstructed() )
         {
+            static_cast<void>( ::fputs(source, stream_) );
         }
         return *this;
     }
@@ -81,6 +82,7 @@ public:
     {
         if( isConstructed() )
         {
+            static_cast<void>( ::fflush(stream_) );
         }
         return *this;
     }
@@ -90,9 +92,10 @@ private:
     /**
      * @brief Constructor.
      *
+     * @param type Type output.     * 
      * @return True if object has been constructed successfully.
      */
-    bool_t construct()
+    bool_t construct(Type type)
     {
         bool_t res( false );
         while(true)
@@ -101,17 +104,24 @@ private:
             {
                 break;
             }
-            // @todo Init...
+            if(type == TYPE_COUT)
+            {
+                stream_ = ::stdout;
+            }
+            else
+            {
+                stream_ = ::stderr;
+            }            
             res = true;
             break;
         }
         return res;
     }
-    
+
     /**
-     * @brief Type of stream.
+     * @brief Output stream.
      */
-    Type type_;
+    ::FILE* stream_;
 
 };
 
