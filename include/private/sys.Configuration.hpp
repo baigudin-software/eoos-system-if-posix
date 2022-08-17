@@ -24,14 +24,14 @@ struct Configuration
      */     
     Configuration();
     
-    #ifdef EOOS_NO_STRICT_MISRA_RULES
+    #ifdef EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
 
     /**
      * @brief Size of heap memory in bytes.
      */
     size_t heapSize;
 
-    #endif // EOOS_NO_STRICT_MISRA_RULES
+    #endif // EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
 
     /**
      * @brief Stack size in bytes for the first user thread to be created.

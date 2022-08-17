@@ -55,12 +55,12 @@ public:
     void* allocate(size_t const size, void* ptr)
     {    
         static_cast<void>(ptr); // Avoid MISRA-C++:2008 Rule 0–1–3 and AUTOSAR C++14 Rule A0-1-4
-        #ifdef EOOS_NO_STRICT_MISRA_RULES
+        #ifdef EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
         return new cell_t[size];
         #else
         static_cast<void>(size); // Avoid MISRA-C++:2008 Rule 0–1–3 and AUTOSAR C++14 Rule A0-1-4
         return NULLPTR;
-        #endif
+        #endif // EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
     }
 
     /**
@@ -68,12 +68,12 @@ public:
      */
     void free(void* ptr)
     {
-        #ifdef EOOS_NO_STRICT_MISRA_RULES
+        #ifdef EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
         cell_t* const mem( reinterpret_cast<cell_t* const>(ptr) );
         delete[] mem;
         #else
         static_cast<void>(ptr); // Avoid MISRA-C++:2008 Rule 0–1–3 and AUTOSAR C++14 Rule A0-1-4
-        #endif
+        #endif // EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
     }
     
 private:

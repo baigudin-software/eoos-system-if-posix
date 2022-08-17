@@ -145,7 +145,7 @@ api::System& System::getSystem()
     return *eoos_;
 }
     
-#ifdef EOOS_NO_STRICT_MISRA_RULES
+#ifdef EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
 
 void* System::operator new(size_t)
 {
@@ -161,7 +161,7 @@ void* System::getNullptr()
     return NULLPTR;
 }
     
-#endif // EOOS_NO_STRICT_MISRA_RULES
+#endif // EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
     
 void System::exit(Error const error)
 {
