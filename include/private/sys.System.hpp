@@ -8,6 +8,7 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.System.hpp"
+#include "sys.Configuration.hpp"
 #include "sys.Scheduler.hpp"
 #include "sys.Heap.hpp"
 #include "sys.OutStreamChar.hpp"
@@ -151,6 +152,11 @@ private:
      * @brief The operating system.
      */
     static api::System* eoos_;
+
+    /**
+     * @brief The operating system configuration.
+     */
+    Configuration configuration_;
     
     /**
      * @brief The operating system scheduler.

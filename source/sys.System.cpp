@@ -20,6 +20,7 @@ api::System* System::eoos_( NULLPTR );
 System::System() 
     : NonCopyable()
     , api::System()
+    , configuration_()
     , scheduler_()
     , heap_() 
     , cout_(OutStreamChar::TYPE_COUT) 
@@ -173,27 +174,36 @@ void System::exit(Error const error)
 
 bool_t System::construct()
 {
-    bool_t res( isConstructed() );
-    while(res == true)
+    bool_t res( false );
+    do 
     {
+        if( !isConstructed() )
+        {
+            break;
+        }
         if( eoos_ != NULLPTR )
         {
-            res = false;
-            continue;
-        }
+            break;
+        }        
         if( !scheduler_.isConstructed() )
         {
-            res = false;
-            continue;
+            break;
         }
         if( !heap_.isConstructed() )
         {
-            res = false;
-            continue;
+            break;
+        }
+        if( !cout_.isConstructed() )
+        {
+            break;
+        }
+        if( !cerr_.isConstructed() )
+        {
+            break;
         }
         eoos_ = this;
-        break;
-    }
+        res = true;
+    } while(false);    
     return res;
 }
 
