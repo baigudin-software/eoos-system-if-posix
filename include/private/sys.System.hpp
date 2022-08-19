@@ -79,7 +79,7 @@ public:
      *
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute() const;
+    int32_t execute();
     
     /**
      * @brief Executes the operating system.
@@ -88,7 +88,7 @@ public:
      * @param argv An array of c-string of arguments where the last one - argc + 1 is null.  
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute(int32_t argc, char_t* argv[]) const;
+    int32_t execute(int32_t argc, char_t* argv[]);
 
     /**
      * @brief Returns an only one created instance of the EOOS system.
@@ -105,41 +105,6 @@ private:
      * @return True if object has been constructed successfully.
      */
     bool_t construct();
-
-    #ifdef EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
-
-    /**
-     * @brief Operator new.
-     *
-     * @note Prohibited to be called as no system heap is initialized till the operation.
-     *
-     * @param size A number of bytes to allocate.
-     * @return Allocated memory address or a null pointer.
-     */
-    static void* operator new(size_t);
-    
-    /**
-     * @brief Operator delete.
-     *
-     * @note Prohibited to be called as no system heap is initialized till the operation.
-     *
-     * @param ptr An address of allocated memory block or a null pointer.
-     */
-    static void operator delete(void*);
-
-    /**
-     * @brief Returns nullptr.
-     *
-     * The function is defined just to avoid G++ warning: 
-     * ‘operator new’ must not return NULL unless it is declared ‘throw()’
-     * as the EOOS POSIX has to be compiled with C++98 and therefore
-     * operator new(std::size_t, std::nothrow_t const&) cannot be declared.
-     *
-     * @return nullptr.
-     */
-    static void* getNullptr();
-
-    #endif // EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
     
     /**
      * @brief Terminates the system execution.

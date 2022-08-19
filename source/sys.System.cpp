@@ -113,26 +113,39 @@ api::Semaphore* System::createSemaphore(int32_t permits) ///< SCA MISRA-C++:2008
     return ptr;
 }
 
-int32_t System::execute() const
+int32_t System::execute()
 {
-    return execute(0, NULLPTR);
+    char_t* args[] = {NULLPTR};    
+    return execute(0, args);
 }
     
-int32_t System::execute(int32_t argc, char_t* argv[]) const
+int32_t System::execute(int32_t argc, char_t* argv[])
 {
-    int32_t error;
-    if( !isConstructed() )
-    {
-        error = static_cast<int32_t>(ERROR_UNDEFINED);
-    }
-    else
+    int32_t error( ERROR_OK );
+    if( isConstructed() && (argc >= 0) )
     {
         lib::LinkedList<char_t*> args;
         for(int32_t i(0); i<argc; i++)
         {
+            if(argv[i] == NULLPTR)
+            {
+                error = ERROR_ARGUMENT;
+                break;
+            }
             args.add(argv[i]);
         }
-        error = Program::start(args);        
+        if( (error != ERROR_ARGUMENT) && (argv[argc] != NULLPTR) )
+        {
+            error = ERROR_ARGUMENT;
+        }
+        if( error != ERROR_ARGUMENT )
+        {
+            error = Program::start(args);
+        }
+    }
+    else
+    {
+        error = ERROR_ARGUMENT;
     }
     return error;
 }
@@ -145,24 +158,6 @@ api::System& System::getSystem()
     }
     return *eoos_;
 }
-    
-#ifdef EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
-
-void* System::operator new(size_t)
-{
-    return getNullptr();
-}
-
-void System::operator delete(void*)
-{
-}
-
-void* System::getNullptr()
-{
-    return NULLPTR;
-}
-    
-#endif // EOOS_ENABLE_DYNAMIC_HEAP_MEMORY
     
 void System::exit(Error const error)
 {
