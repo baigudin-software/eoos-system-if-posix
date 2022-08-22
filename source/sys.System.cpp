@@ -122,7 +122,7 @@ int32_t System::execute()
 int32_t System::execute(int32_t argc, char_t* argv[])
 {
     int32_t error( ERROR_OK );
-    if( isConstructed() && (argc >= 0) )
+    if( isConstructed() && (argc >= 0) && (argv != NULLPTR) )
     {
         lib::LinkedList<char_t*> args;
         for(int32_t i(0); i<argc; i++)
