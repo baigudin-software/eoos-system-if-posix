@@ -9,11 +9,11 @@
 #define SYS_POSIX_HPP_
 
 #include <sys/types.h>
-#include <stdlib.h>
+#include <stdlib.h> ///< SCA MISRA-C++:2008 Justified Rule 18-0-1
 #include <pthread.h>
 #include <semaphore.h>
 #include <sched.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <stdio.h> ///< SCA MISRA-C++:2008 Justified Rule 18-0-1 and Rule 27-0-1
 
 #endif // SYS_POSIX_HPP_

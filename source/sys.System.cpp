@@ -31,8 +31,8 @@ System::System()
 
 System::~System() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
-    cout_.flush();
-    cerr_.flush();
+    static_cast<void>(cout_.flush());
+    static_cast<void>(cerr_.flush());
     eoos_ = NULLPTR;
 }
 
@@ -50,31 +50,31 @@ api::Scheduler& System::getScheduler() ///< SCA MISRA-C++:2008 Defected Rule 10-
     return scheduler_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
-api::Heap& System::getHeap()
+api::Heap& System::getHeap() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
     {
         exit(ERROR_SYSCALL_CALLED);
     }
-    return heap_;
+    return heap_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
-api::OutStream<char_t>& System::getOutStreamChar()
+api::OutStream<char_t>& System::getOutStreamChar() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
     {
         exit(ERROR_SYSCALL_CALLED);
     }
-    return cout_;
+    return cout_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
-api::OutStream<char_t>& System::getErrorStreamChar()
+api::OutStream<char_t>& System::getErrorStreamChar() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
     {
         exit(ERROR_SYSCALL_CALLED);
     }
-    return cerr_;
+    return cerr_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
 api::Mutex* System::createMutex() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
@@ -113,13 +113,13 @@ api::Semaphore* System::createSemaphore(int32_t permits) ///< SCA MISRA-C++:2008
     return ptr;
 }
 
-int32_t System::execute()
+int32_t System::execute() const
 {
     char_t* args[] = {NULLPTR};    
-    return execute(0, args);
+    return execute(0, args); ///< SCA MISRA-C++:2008 Justified Rule 5-2-12
 }
     
-int32_t System::execute(int32_t argc, char_t* argv[])
+int32_t System::execute(int32_t argc, char_t* argv[]) const
 {
     int32_t error( ERROR_OK );
     if( isConstructed() && (argc >= 0) && (argv != NULLPTR) )
@@ -127,12 +127,15 @@ int32_t System::execute(int32_t argc, char_t* argv[])
         lib::LinkedList<char_t*> args;
         for(int32_t i(0); i<argc; i++)
         {
-            if(argv[i] == NULLPTR)
+            if( argv[i] != NULLPTR )
             {
-                error = ERROR_ARGUMENT;
-                break;
+                if( args.add(argv[i]) == true )
+                {
+                    continue;
+                }
             }
-            args.add(argv[i]);
+            error = ERROR_ARGUMENT;
+            break;
         }
         if( (error != ERROR_ARGUMENT) && (argv[argc] != NULLPTR) )
         {
@@ -161,7 +164,7 @@ api::System& System::getSystem()
     
 void System::exit(Error const error)
 {
-    ::exit( static_cast<int_t>(error) );
+    ::exit( static_cast<int_t>(error) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
     // This code must NOT be executed
     // @todo throw an exection here is better.
     while( true ) {}

@@ -79,7 +79,7 @@ public:
      *
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute();
+    int32_t execute() const;
     
     /**
      * @brief Executes the operating system.
@@ -88,7 +88,7 @@ public:
      * @param argv An array of c-string of arguments where the last one - argc + 1 is null.  
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute(int32_t argc, char_t* argv[]);
+    int32_t execute(int32_t argc, char_t* argv[]) const;
 
     /**
      * @brief Returns an only one created instance of the EOOS system.

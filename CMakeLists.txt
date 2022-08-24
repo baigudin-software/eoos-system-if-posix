@@ -22,7 +22,6 @@ endif()
 target_sources(target-eoos
 PRIVATE
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.Call.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/source/sys.Configuration.cpp"	
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.Main.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.Scheduler.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/source/sys.System.cpp"

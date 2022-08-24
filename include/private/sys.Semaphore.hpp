@@ -140,7 +140,7 @@ private:
     static bool_t isFair()
     {
         int_t const priority( ::sched_getscheduler(0) );
-        return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;
+        return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;  ///< SCA MISRA-C++:2008 Justified Rule 16-2-2
     }
 
     /**

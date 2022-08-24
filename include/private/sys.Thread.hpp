@@ -197,7 +197,7 @@ private:
         {
             return NULLPTR;
         }
-        api::Task* const task( *reinterpret_cast<api::Task**>(argument) );
+        api::Task* const task( *reinterpret_cast<api::Task**>(argument) ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
         if(task == NULLPTR)
         {
             return NULLPTR;
