@@ -101,7 +101,7 @@ private:
         while(true)
         {   
             if( !isConstructed() )
-            {
+            {   ///< UT Justified Branch: HW dependency
                 break;
             }
             if(type == TYPE_COUT)

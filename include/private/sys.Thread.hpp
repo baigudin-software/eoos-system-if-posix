@@ -86,13 +86,13 @@ public:
             {
                 error = ::pthread_attr_setstacksize(&pthreadAttr.attr, stackSize);
                 if(error != 0)
-                {
+                {   ///< UT Justified Branch: OS dependency
                     break;
                 }
             }
             error = ::pthread_create(&thread_, &pthreadAttr.attr, &start, &task_);
             if(error != 0)
-            {
+            {   ///< UT Justified Branch: OS dependency
                 break;
             }
             status_ = STATUS_RUNNABLE;
@@ -165,11 +165,11 @@ private:
         do
         {
             if( !isConstructed() )
-            {
+            {   ///< UT Justified Branch: HW dependency
                 break;
             }
             if( task_ == NULLPTR )
-            {
+            {   ///< UT Justified Branch: SW dependency
                 break;
             }
             if( !task_->isConstructed() )
@@ -194,16 +194,16 @@ private:
     static void* start(void* argument)
     {
         if(argument == NULLPTR) 
-        {
+        {   ///< UT Justified Branch: SW dependency
             return NULLPTR;
         }
         api::Task* const task( *reinterpret_cast<api::Task**>(argument) ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
         if(task == NULLPTR)
-        {
+        {   ///< UT Justified Branch: HW dependency
             return NULLPTR;
         }
         if( !task->isConstructed() )
-        {
+        {   ///< UT Justified Branch: HW dependency
             return NULLPTR;
         }        
         int_t oldtype;
@@ -214,7 +214,7 @@ private:
         // cancellation request.
         int_t error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
         if(error != 0)
-        {
+        {   ///< UT Justified Branch: OS dependency
             return NULLPTR;
         }
         // The thread can be canceled at any time. Typically, it
@@ -222,7 +222,7 @@ private:
         // request, but the system doesn't guarantee this.
         error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
         if(error != 0)
-        {
+        {   ///< UT Justified Branch: OS dependency
             return NULLPTR;
         }
         task->start();

@@ -44,7 +44,7 @@ bool_t System::isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3
 api::Scheduler& System::getScheduler() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
-    {
+    {   ///< UT Justified Branch: HW dependency
         exit(ERROR_SYSCALL_CALLED);
     }
     return scheduler_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
@@ -53,7 +53,7 @@ api::Scheduler& System::getScheduler() ///< SCA MISRA-C++:2008 Defected Rule 10-
 api::Heap& System::getHeap() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
-    {
+    {   ///< UT Justified Branch: HW dependency
         exit(ERROR_SYSCALL_CALLED);
     }
     return heap_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
@@ -62,7 +62,7 @@ api::Heap& System::getHeap() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 api::OutStream<char_t>& System::getOutStreamChar() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
-    {
+    {   ///< UT Justified Branch: HW dependency
         exit(ERROR_SYSCALL_CALLED);
     }
     return cout_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
@@ -71,7 +71,7 @@ api::OutStream<char_t>& System::getOutStreamChar() ///< SCA MISRA-C++:2008 Defec
 api::OutStream<char_t>& System::getErrorStreamChar() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
 {
     if( !isConstructed() )
-    {
+    {   ///< UT Justified Branch: HW dependency
         exit(ERROR_SYSCALL_CALLED);
     }
     return cerr_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
@@ -86,7 +86,7 @@ api::Mutex* System::createMutex() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
         if( !res.isNull() )
         {
             if( !res->isConstructed() )
-            {
+            {   ///< UT Justified Branch: HW dependency
                 res.reset();
             }
         }
@@ -156,13 +156,13 @@ int32_t System::execute(int32_t argc, char_t* argv[]) const
 api::System& System::getSystem()
 {
     if(eoos_ == NULLPTR)
-    {
+    {   ///< UT Justified Branch: Startup dependency
         exit(ERROR_SYSCALL_CALLED);
     }
     return *eoos_;
 }
     
-void System::exit(Error const error)
+void System::exit(Error const error) ///< UT Justified Branch: HW dependency
 {
     ::exit( static_cast<int_t>(error) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
     // This code must NOT be executed
@@ -176,27 +176,27 @@ bool_t System::construct()
     do 
     {
         if( !isConstructed() )
-        {
+        {   ///< UT Justified Branch: HW dependency
             break;
         }
         if( eoos_ != NULLPTR )
-        {
+        {   ///< UT Justified Branch: Startup dependency
             break;
         }        
         if( !scheduler_.isConstructed() )
-        {
+        {   ///< UT Justified Branch: HW dependency
             break;
         }
         if( !heap_.isConstructed() )
-        {
+        {   ///< UT Justified Branch: HW dependency
             break;
         }
         if( !cout_.isConstructed() )
-        {
+        {   ///< UT Justified Branch: HW dependency
             break;
         }
         if( !cerr_.isConstructed() )
-        {
+        {   ///< UT Justified Branch: HW dependency
             break;
         }
         eoos_ = this;

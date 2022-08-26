@@ -34,7 +34,7 @@ public:
         , api::Semaphore()
         , isFair_(false)
         , permits_(permits)
-        , sem_(NULLPTR){
+        , sem_(){
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
@@ -63,7 +63,7 @@ public:
         bool_t res( false );
         if( isConstructed() )
         {
-            int_t const error( ::sem_wait(sem_) );
+            int_t const error( ::sem_wait(&sem_) );
             if(error == 0) 
             { 
                 res = true; 
@@ -81,7 +81,7 @@ public:
         {
             bool_t const isPosted( post() );
             if ( !isPosted )
-            {
+            {   ///< UT Justified Branch: OS dependency
                 setConstructed(false);
             }
         }
@@ -94,20 +94,15 @@ private:
      *
      * @return true if object has been constructed successfully.
      */
-    bool_t construct() try
+    bool_t construct()
     {
         bool_t res( false );
         do {
             if( !isConstructed() )
-            {
+            {   ///< UT Justified Branch: HW dependency
                 break;
             }
-            sem_ = new ::sem_t;
-            if(sem_ == NULLPTR)
-            {
-                break;
-            }
-            int_t const error( ::sem_init(sem_, 0, static_cast<uint_t >(permits_)) );
+            int_t const error( ::sem_init(&sem_, 0, static_cast<uint_t >(permits_)) );
             if(error != 0)
             {
                 break;
@@ -116,20 +111,14 @@ private:
             res = true;
         } while(false);
         return res;
-    } catch (...) {
-        return false;
     }
     
     /**
      * @brief Destructs this object.
      */
-    void destruct() const
+    void destruct()
     {
-        if(sem_ != NULLPTR)
-        {
-            static_cast<void>( ::sem_destroy(sem_) );
-            delete sem_;
-        }
+        static_cast<void>( ::sem_destroy(&sem_) );
     }
 
     /**
@@ -148,12 +137,12 @@ private:
      *
      * @return True on success.
      */
-    bool_t post() const
+    bool_t post()
     {
         bool_t res( true );
-        int_t const error( ::sem_post(sem_) );
+        int_t const error( ::sem_post(&sem_) );
         if (error != 0)
-        {
+        {   ///< UT Justified Branch: OS dependency
             res = false;
         }
         return res;
@@ -171,10 +160,8 @@ private:
 
     /**
      * @brief Semaphore resource identifier.
-     *
-     * @todo Implement it as `sem_t`
      */
-    sem_t* sem_;    
+    ::sem_t sem_;    
 
 };
         

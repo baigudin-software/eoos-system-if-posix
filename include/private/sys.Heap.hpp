@@ -89,7 +89,7 @@ private:
         while(true)
         {   
             if( !isConstructed() )
-            {
+            {   ///< UT Justified Branch: HW dependency
                 break;
             }
             res = true;

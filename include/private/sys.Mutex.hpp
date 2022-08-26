@@ -30,7 +30,7 @@ public:
     Mutex() 
         : NonCopyable()
         , api::Mutex()
-        , mutex_( NULLPTR ) {
+        , mutex_() {
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
@@ -59,7 +59,7 @@ public:
         bool_t res( false );
         if( isConstructed() )
         {
-            int_t const error( ::pthread_mutex_trylock(mutex_) );
+            int_t const error( ::pthread_mutex_trylock(&mutex_) );
             res = (error == 0) ? true : false;
         }
         return res;
@@ -73,7 +73,7 @@ public:
         bool_t res( false );
         if( isConstructed() )
         {
-            int_t const error( ::pthread_mutex_lock(mutex_) );
+            int_t const error( ::pthread_mutex_lock(&mutex_) );
             res = (error == 0) ? true : false;
         }
         return res;
@@ -86,9 +86,9 @@ public:
     {
         if( isConstructed() )
         {
-            int_t const error( ::pthread_mutex_unlock(mutex_) );
+            int_t const error( ::pthread_mutex_unlock(&mutex_) );
             if (error != 0)
-            {
+            {   ///< UT Justified Branch: OS dependency
                 setConstructed(false);
             }
         }
@@ -101,49 +101,37 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct() try
+    bool_t construct()
     {
         bool_t res( false );
         do
         {   
             if( !isConstructed() )
-            {
+            {   ///< UT Justified Branch: HW dependency
                 break;
             }
-            // @todo Revise possobility to avoud memory allocation here.
-            mutex_ = new ::pthread_mutex_t;
-            if(mutex_ == NULLPTR)
-            {
-                break;
-            }
-            int_t const error( ::pthread_mutex_init(mutex_, NULL) );
+            int_t const error( ::pthread_mutex_init(&mutex_, NULL) );
             if(error != 0)
-            {
+            {   ///< UT Justified Branch: OS dependency
                 break;
             }
             res = true;
         } while(false);
         return res;
-    } catch(...) {
-        return false;
     }
     
     /**
      * @brief Destructs this object.
      */
-    void destruct() const
+    void destruct()
     {
-        if(mutex_ != NULLPTR)
-        {
-            static_cast<void>( ::pthread_mutex_destroy(mutex_) );
-            delete mutex_;
-        }        
+        static_cast<void>( ::pthread_mutex_destroy(&mutex_) );
     }
 
     /**
      * @brief Mutex resource identifier.
      */
-    pthread_mutex_t* mutex_;    
+    ::pthread_mutex_t mutex_;
     
 };
 

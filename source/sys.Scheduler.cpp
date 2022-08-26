@@ -103,7 +103,7 @@ void Scheduler::yield() ///< SCA MISRA-C++:2008 Defected Rule 10-3-2
     {
         int_t const error( ::sched_yield() );
         if(error != 0)
-        {
+        {   ///< UT Justified Branch: OS dependency
             setConstructed(false);
         }
     }
