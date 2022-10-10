@@ -137,13 +137,17 @@ int32_t System::execute(int32_t argc, char_t* argv[]) const
             error = ERROR_ARGUMENT;
             break;
         }
-        if( (error != ERROR_ARGUMENT) && (argv[argc] != NULLPTR) )
-        {
-            error = ERROR_ARGUMENT;
-        }
         if( error != ERROR_ARGUMENT )
         {
-            error = Program::start(args);
+            if( argv[argc] == NULLPTR )
+            {
+                error = Program::start(args);
+            }
+            else
+            {
+                error = ERROR_ARGUMENT;
+            }
+
         }
     }
     else
