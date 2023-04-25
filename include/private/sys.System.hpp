@@ -1,17 +1,18 @@
 /**
  * @file      sys.System.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SYSTEM_HPP_
 #define SYS_SYSTEM_HPP_
 
 #include "sys.NonCopyable.hpp"
 #include "api.System.hpp"
-#include "sys.Configuration.hpp"
 #include "sys.Scheduler.hpp"
+#include "sys.MutexManager.hpp"	
+#include "sys.SemaphoreManager.hpp"
+#include "sys.StreamManager.hpp"
 #include "sys.Heap.hpp"
-#include "sys.OutStreamChar.hpp"
 #include "sys.Error.hpp"
 
 namespace eoos
@@ -55,24 +56,34 @@ public:
     virtual api::Heap& getHeap();
     
     /**
-     * @copydoc eoos::api::System::getOutStreamChar()
-     */    
-    virtual api::OutStream<char_t>& getOutStreamChar();
-
-    /**
-     * @copydoc eoos::api::System::getErrorStreamChar()
-     */    
-    virtual api::OutStream<char_t>& getErrorStreamChar();    
-
-    /**
-     * @copydoc eoos::api::System::createMutex()
+     * @copydoc eoos::api::System::hasMutexManager()
      */
-    virtual api::Mutex* createMutex();
+    virtual bool_t hasMutexManager();
+	
+    /**
+     * @copydoc eoos::api::System::getMutexManager()
+     */
+    virtual api::MutexManager& getMutexManager();
 
     /**
-     * @copydoc eoos::api::System::creatSemaphore(int32_t)
+     * @copydoc eoos::api::System::hasSemaphoreManager()
      */
-    virtual api::Semaphore* createSemaphore(int32_t permits);
+    virtual bool_t hasSemaphoreManager();
+	
+    /**
+     * @copydoc eoos::api::System::getSemaphoreManager()
+     */
+    virtual api::SemaphoreManager& getSemaphoreManager();
+    
+    /**
+     * @copydoc eoos::api::System::hasStreamManager()
+     */
+    virtual bool_t hasStreamManager();
+	
+    /**
+     * @copydoc eoos::api::System::getStreamManager()
+     */
+    virtual api::StreamManager& getStreamManager();
 
     /**
      * @brief Executes the operating system.
@@ -119,29 +130,29 @@ private:
     static api::System* eoos_;
 
     /**
-     * @brief The operating system configuration.
+     * @brief The system heap.
      */
-    Configuration configuration_;
-    
+    mutable Heap heap_;
+ 
     /**
      * @brief The operating system scheduler.
      */
     mutable Scheduler scheduler_;
 
     /**
-     * @brief The system heap.
+     * @brief The mutex sub-system manager.
      */
-    mutable Heap heap_;    
+    mutable MutexManager mutex_;
 
     /**
-     * @brief The system output character stream.
+     * @brief The semaphore sub-system manager.
      */
-    OutStreamChar cout_;
+    mutable SemaphoreManager semaphore_;
     
     /**
-     * @brief The system error character stream.
+     * @brief The stream sub-system manager.
      */
-    OutStreamChar cerr_;
+    mutable StreamManager stream_;
 
 };
 
