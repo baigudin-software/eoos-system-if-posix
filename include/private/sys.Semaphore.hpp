@@ -107,7 +107,7 @@ private:
             {
                 break;
             }
-			isFair_ = isFair();
+            isFair_ = isFair();
             res = true;
         } while(false);
         return res;

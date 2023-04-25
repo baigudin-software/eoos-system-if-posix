@@ -9,7 +9,7 @@
 #include "sys.NonCopyable.hpp"
 #include "api.System.hpp"
 #include "sys.Scheduler.hpp"
-#include "sys.MutexManager.hpp"	
+#include "sys.MutexManager.hpp"
 #include "sys.SemaphoreManager.hpp"
 #include "sys.StreamManager.hpp"
 #include "sys.Heap.hpp"
@@ -54,12 +54,12 @@ public:
      * @copydoc eoos::api::System::getHeap()
      */
     virtual api::Heap& getHeap();
-    
+
     /**
      * @copydoc eoos::api::System::hasMutexManager()
      */
     virtual bool_t hasMutexManager();
-	
+
     /**
      * @copydoc eoos::api::System::getMutexManager()
      */
@@ -69,7 +69,7 @@ public:
      * @copydoc eoos::api::System::hasSemaphoreManager()
      */
     virtual bool_t hasSemaphoreManager();
-	
+
     /**
      * @copydoc eoos::api::System::getSemaphoreManager()
      */
@@ -79,7 +79,7 @@ public:
      * @copydoc eoos::api::System::hasStreamManager()
      */
     virtual bool_t hasStreamManager();
-	
+
     /**
      * @copydoc eoos::api::System::getStreamManager()
      */

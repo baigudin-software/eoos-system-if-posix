@@ -11,7 +11,7 @@
 #include "sys.Posix.hpp"
 #include "lib.Types.hpp"
 
-#if EOOS_CPP_STANDARD >= 2011
+#if EOOS_CPP_STANDARD >= 2011 && defined (EOOS_CPP_NOTHROW)
 #include <new>
 #endif // EOOS_CPP_STANDARD >= 2011
 
@@ -21,10 +21,10 @@ namespace sys
 {
 
 // POSIX used redefined types to comply MISRA-C++:2008
-typedef int    			int_t;
+typedef int             int_t;
 typedef unsigned int    uint_t;
 
-#if EOOS_CPP_STANDARD >= 2011
+#if EOOS_CPP_STANDARD >= 2011 && defined (EOOS_CPP_NOTHROW)
 
 /**
  * @brief Empty class type used to disambiguate the overloads of throwing and non-throwing allocation.
