@@ -113,46 +113,13 @@ api::StreamManager& System::getStreamManager()
 
 int32_t System::execute() const
 {
-    char_t* args[] = {NULLPTR};    
+    char_t* args[] = {NULLPTR};
     return execute(0, args); ///< SCA MISRA-C++:2008 Justified Rule 5-2-12
 }
     
 int32_t System::execute(int32_t argc, char_t* argv[]) const
 {
-    int32_t error( ERROR_OK );
-    if( isConstructed() && (argc >= 0) && (argv != NULLPTR) )
-    {
-        lib::LinkedList<char_t*> args;
-        for(int32_t i(0); i<argc; i++)
-        {
-            if( argv[i] != NULLPTR )
-            {
-                if( args.add(argv[i]) == true )
-                {
-                    continue;
-                }
-            }
-            error = ERROR_ARGUMENT;
-            break;
-        }
-        if( error != ERROR_ARGUMENT )
-        {
-            if( argv[argc] == NULLPTR )
-            {
-                error = Program::start(args);
-            }
-            else
-            {
-                error = ERROR_ARGUMENT;
-            }
-
-        }
-    }
-    else
-    {
-        error = ERROR_ARGUMENT;
-    }
-    return error;
+    return Program::start(argc, argv);
 }
 
 api::System& System::getSystem()
