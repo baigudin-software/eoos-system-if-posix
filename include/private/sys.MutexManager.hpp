@@ -58,15 +58,23 @@ public:
         api::Mutex* ptr( NULLPTR );
         if( isConstructed() )
         {
-            lib::UniquePointer<api::Mutex> res( new Mutex() );
-            if( !res.isNull() )
+            lib::UniquePointer<Mutex> mutex( new Mutex() );
+            if( !mutex.isNull() )
             {
-                if( !res->isConstructed() )
-                {   ///< UT Justified Branch: HW dependency
-                    res.reset();
+                bool_t res( false );
+                if( mutex->isConstructed() )
+                {
+                    if( mutex->initialize() )
+                    {
+                        res = true;
+                    }
+                }
+                if( res == false )
+                {
+                    mutex.reset();
                 }
             }
-            ptr = res.release();
+            ptr = mutex.release();
         }    
         return ptr;
     }
