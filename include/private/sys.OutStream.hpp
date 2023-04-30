@@ -1,14 +1,14 @@
 /**
- * @file      sys.OutStreamChar.hpp
+ * @file      sys.OutStream.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
  * @copyright 2022, Sergey Baigudin, Baigudin Software
  */
-#ifndef SYS_OUTSTREAMCHAR_HPP_
-#define SYS_OUTSTREAMCHAR_HPP_
+#ifndef SYS_OUTSTREAM_HPP_
+#define SYS_OUTSTREAM_HPP_
 
 #include "sys.NonCopyable.hpp"
 #include "api.OutStream.hpp"
-#include "lib.Memory.hpp"
+#include "lib.BaseString.hpp"
 
 namespace eoos
 {
@@ -16,10 +16,10 @@ namespace sys
 {
 
 /**
- * @class OutStreamChar.
- * @brief OutStreamChar class.
+ * @class OutStream.
+ * @brief OutStream class.
  */
-class OutStreamChar : public NonCopyable, public api::OutStream<char_t>
+class OutStream : public NonCopyable, public api::OutStream<char_t>
 {
     typedef NonCopyable Parent;
 
@@ -40,7 +40,7 @@ public:
      *
      * @param type Type output.
      */
-    OutStreamChar(Type type) 
+    OutStream(Type type) 
         : NonCopyable()
         , api::OutStream<char_t>()
         , stream_( NULLPTR ) {
@@ -51,7 +51,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~OutStreamChar()
+    virtual ~OutStream()
     {
     }
 
@@ -64,9 +64,9 @@ public:
     }
     
     /**
-     * @copydoc eoos::api::OutStream::operator<<()
+     * @copydoc eoos::api::OutStream::operator<<(T const*)
      */
-    virtual OutStream<char_t>& operator<<(char_t const* source)
+    virtual api::OutStream<char_t>& operator<<(char_t const* source)
     {
         if( isConstructed() )
         {
@@ -76,9 +76,18 @@ public:
     }
 
     /**
+     * @copydoc eoos::api::OutStream::operator<<(int32_t)
+     */
+    virtual api::OutStream<char_t>& operator<<(int32_t value)
+    {
+        lib::BaseString<char_t,16> str(value);
+        return this->operator<<( str.getChar() );
+    }    
+
+    /**
      * @copydoc eoos::api::OutStream::flush()
      */    
-    virtual OutStream<char_t>& flush()
+    virtual api::OutStream<char_t>& flush()
     {
         if( isConstructed() )
         {
@@ -127,4 +136,4 @@ private:
 
 } // namespace sys
 } // namespace eoos
-#endif // SYS_OUTSTREAMCHAR_HPP_
+#endif // SYS_OUTSTREAM_HPP_

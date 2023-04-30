@@ -8,7 +8,7 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.StreamManager.hpp"
-#include "sys.OutStreamChar.hpp"
+#include "sys.OutStream.hpp"
 
 namespace eoos
 {
@@ -31,8 +31,8 @@ public:
     StreamManager() 
         : NonCopyable()
         , api::StreamManager() 
-        , cout_(OutStreamChar::TYPE_COUT) 
-        , cerr_(OutStreamChar::TYPE_CERR) {
+        , cout_(OutStream::TYPE_COUT) 
+        , cerr_(OutStream::TYPE_CERR) {
         setConstructed( true );
     }
 
@@ -74,12 +74,12 @@ private:
     /**
      * @brief The system output character stream.
      */
-    OutStreamChar cout_;
+    OutStream cout_;
 
     /**
      * @brief The system error character stream.
      */
-    OutStreamChar cerr_;
+    OutStream cerr_;
 
 };
 
