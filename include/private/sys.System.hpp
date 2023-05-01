@@ -24,9 +24,9 @@ namespace sys
  * @class System
  * @brief The operating system.
  */
-class System : public NonCopyable, public api::System
+class System : public NonCopyable<>, public api::System
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<> Parent;
 
 public:
 
@@ -137,22 +137,22 @@ private:
     /**
      * @brief The operating system scheduler.
      */
-    mutable Scheduler scheduler_;
+    mutable Scheduler<> scheduler_;
 
     /**
      * @brief The mutex sub-system manager.
      */
-    mutable MutexManager mutex_;
+    mutable MutexManager<> mutex_;
 
     /**
      * @brief The semaphore sub-system manager.
      */
-    mutable SemaphoreManager semaphore_;
+    mutable SemaphoreManager<> semaphore_;
     
     /**
      * @brief The stream sub-system manager.
      */
-    mutable StreamManager stream_;
+    mutable StreamManager<> stream_;
 
 };
 

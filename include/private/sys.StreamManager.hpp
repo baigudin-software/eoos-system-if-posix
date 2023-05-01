@@ -18,10 +18,13 @@ namespace sys
 /**
  * @class StreamManager.
  * @brief Stream sub-system manager.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class StreamManager : public NonCopyable, public api::StreamManager
+template <class A = Allocator>
+class StreamManager : public NonCopyable<A>, public api::StreamManager
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -29,10 +32,10 @@ public:
      * @brief Constructor.
      */
     StreamManager() 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::StreamManager() 
-        , cout_(OutStream::TYPE_COUT) 
-        , cerr_(OutStream::TYPE_CERR) {
+        , cout_(OutStream<A>::TYPE_COUT) 
+        , cerr_(OutStream<A>::TYPE_CERR) {
         setConstructed( true );
     }
 
@@ -69,17 +72,21 @@ public:
         return cerr_;
     }    
 
+protected:
+
+    using Parent::setConstructed;
+
 private:
     
     /**
      * @brief The system output character stream.
      */
-    OutStream cout_;
+    OutStream<A> cout_;
 
     /**
      * @brief The system error character stream.
      */
-    OutStream cerr_;
+    OutStream<A> cerr_;
 
 };
 

@@ -1,7 +1,7 @@
 /**
  * @file      sys.NonCopyable.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2021-2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2021-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_NONCOPYABLE_HPP_
 #define SYS_NONCOPYABLE_HPP_
@@ -16,10 +16,13 @@ namespace sys
 /**
  * @class NonCopyable
  * @brief Root class of the operating system for objects which cannot be copied.
+ *
+ * @tparam A Heap memory allocator class.
  */
-class NonCopyable : public Object
+template <class A = Allocator>
+class NonCopyable : public Object<A>
 {
-    typedef Object Parent;
+    typedef Object<A> Parent;
 
 public:
 
@@ -27,7 +30,7 @@ public:
      * @brief Constructor.
      */
     NonCopyable() 
-        : Object() {
+        : Object<A>() {
     }
 
     /**

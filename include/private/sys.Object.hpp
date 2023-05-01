@@ -1,13 +1,13 @@
 /**
  * @file      sys.Object.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_OBJECT_HPP_
 #define SYS_OBJECT_HPP_
 
 #include "lib.Object.hpp"
-#include "sys.Types.hpp"
+#include "sys.Allocator.hpp"
 
 namespace eoos
 {
@@ -17,10 +17,13 @@ namespace sys
 /**
  * @class Object
  * @brief Root class of the operating system class hierarchy.
+ *
+ * @tparam A Heap memory allocator class.
  */
-class Object : public lib::Object<>
+template <class A = Allocator>
+class Object : public lib::Object<A>
 {
-    typedef lib::Object<> Parent;
+    typedef lib::Object<A> Parent;
 
 public:
 
@@ -28,7 +31,7 @@ public:
      * @brief Constructor.
      */
     Object()
-        : lib::Object<>() {
+        : lib::Object<A>() {
     }
 
     /**

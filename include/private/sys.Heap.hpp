@@ -1,12 +1,11 @@
 /**
  * @file      sys.Heap.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2022-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_HEAP_HPP_
 #define SYS_HEAP_HPP_
 
-#include "sys.NonCopyable.hpp"
 #include "api.Heap.hpp"
 
 namespace eoos
@@ -18,9 +17,8 @@ namespace sys
  * @class Heap.
  * @brief Heap class.
  */
-class Heap : public NonCopyable, public api::Heap
+class Heap : public api::Heap
 {
-    typedef NonCopyable Parent;
 
 public:
 
@@ -28,10 +26,7 @@ public:
      * @brief Constructor.
      */
     Heap() 
-        : NonCopyable()
-        , api::Heap() {
-        bool_t const isConstructed( construct() );
-        setConstructed( isConstructed );
+        : api::Heap() {
     }
 
     /**
@@ -46,7 +41,7 @@ public:
      */
     virtual bool_t isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
     {
-        return Parent::isConstructed();
+        return true;
     }
     
     /**
@@ -74,28 +69,6 @@ public:
         ucell_t* const mem( reinterpret_cast<ucell_t* const>(ptr) ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
         delete[] mem;
         #endif // EOOS_GLOBAL_ENABLE_NO_HEAP
-    }
-    
-private:
-
-    /**
-     * @brief Constructor.
-     *
-     * @return True if object has been constructed successfully.
-     */
-    bool_t construct() const
-    {
-        bool_t res( false );
-        while(true)
-        {   
-            if( !isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            res = true;
-            break;
-        }
-        return res;
     }
     
 };

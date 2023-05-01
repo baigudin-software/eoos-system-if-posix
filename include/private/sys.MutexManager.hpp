@@ -19,10 +19,13 @@ namespace sys
 /**
  * @class MutexManager.
  * @brief Mutex sub-system manager.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class MutexManager : public NonCopyable, public api::MutexManager
+template <class A = Allocator>
+class MutexManager : public NonCopyable<A>, public api::MutexManager
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -30,7 +33,7 @@ public:
      * @brief Constructor.
      */
     MutexManager() 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::MutexManager() {
         setConstructed( true );
     }
@@ -58,7 +61,7 @@ public:
         api::Mutex* ptr( NULLPTR );
         if( isConstructed() )
         {
-            lib::UniquePointer<Mutex> mutex( new Mutex() );
+            lib::UniquePointer< Mutex<A> > mutex( new Mutex<A>() );
             if( !mutex.isNull() )
             {
                 bool_t res( false );
@@ -89,6 +92,10 @@ public:
             delete mutex;
         }
     }
+
+protected:
+
+    using Parent::setConstructed;
 
 };
 

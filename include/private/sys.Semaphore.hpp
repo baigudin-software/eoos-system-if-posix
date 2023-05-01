@@ -1,7 +1,7 @@
 /**
  * @file      sys.Semaphore.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017-2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2017-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_SEMAPHORE_HPP_
 #define SYS_SEMAPHORE_HPP_
@@ -17,10 +17,13 @@ namespace sys
 /**
  * @class Semaphore
  * @brief Semaphore class.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class Semaphore : public NonCopyable, public api::Semaphore
+template <class A = Allocator>
+class Semaphore : public NonCopyable<A>, public api::Semaphore
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -30,7 +33,7 @@ public:
      * @param permits The initial number of permits available.
      */
     explicit Semaphore(int32_t permits) 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::Semaphore()
         , isFair_(false)
         , permits_(permits)
@@ -86,6 +89,10 @@ public:
             }
         }
     }
+
+protected:
+
+    using Parent::setConstructed;
 
 private:
 

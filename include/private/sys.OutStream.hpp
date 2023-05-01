@@ -1,7 +1,7 @@
 /**
  * @file      sys.OutStream.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2022-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_OUTSTREAM_HPP_
 #define SYS_OUTSTREAM_HPP_
@@ -18,10 +18,13 @@ namespace sys
 /**
  * @class OutStream.
  * @brief OutStream class.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class OutStream : public NonCopyable, public api::OutStream<char_t>
+template <class A = Allocator>
+class OutStream : public NonCopyable<A>, public api::OutStream<char_t>
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -41,7 +44,7 @@ public:
      * @param type Type output.
      */
     OutStream(Type type) 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::OutStream<char_t>()
         , stream_( NULLPTR ) {
         bool_t const isConstructed( construct(type) );
@@ -95,6 +98,10 @@ public:
         }
         return *this;
     }
+
+protected:
+
+    using Parent::setConstructed;
     
 private:
 

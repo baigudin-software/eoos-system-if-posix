@@ -19,10 +19,13 @@ namespace sys
 /**
  * @class SemaphoreManager.
  * @brief Semaphore sub-system manager.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class SemaphoreManager : public NonCopyable, public api::SemaphoreManager
+template <class A = Allocator>
+class SemaphoreManager : public NonCopyable<A>, public api::SemaphoreManager
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -30,7 +33,7 @@ public:
      * @brief Constructor.
      */
     SemaphoreManager() 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::SemaphoreManager() {
         setConstructed( true );
     }
@@ -58,7 +61,7 @@ public:
         api::Semaphore* ptr( NULLPTR );
         if( isConstructed() )
         {
-            lib::UniquePointer<api::Semaphore> res( new Semaphore(permits) );
+            lib::UniquePointer<api::Semaphore> res( new Semaphore<A>(permits) );
             if( !res.isNull() )
             {
                 if( !res->isConstructed() )
@@ -81,6 +84,10 @@ public:
             delete semaphore;
         }
     }
+
+protected:
+
+    using Parent::setConstructed;
 
 };
 

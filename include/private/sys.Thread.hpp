@@ -1,7 +1,7 @@
 /**
  * @file      sys.Thread.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_THREAD_HPP_
 #define SYS_THREAD_HPP_
@@ -18,10 +18,13 @@ namespace sys
 /**
  * @class Thread
  * @brief Thread class.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class Thread : public NonCopyable, public api::Thread
+template <class A = Allocator>
+class Thread : public NonCopyable<A>, public api::Thread
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -31,7 +34,7 @@ public:
      * @param task A task interface whose main method is invoked when this thread is started.
      */
     Thread(api::Task& task) 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::Thread()
         , task_ (&task)
         , status_ (STATUS_NEW)
@@ -151,6 +154,10 @@ public:
         // @todo Implemet setting priority on system level regarding common API rage
         return res;
     }
+
+protected:
+
+    using Parent::setConstructed;
 
 private:
 

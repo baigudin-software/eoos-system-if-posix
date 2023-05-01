@@ -1,7 +1,7 @@
 /**
  * @file      sys.Mutex.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2021-2022, Sergey Baigudin, Baigudin Software
+ * @copyright 2021-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_MUTEX_HPP_
 #define SYS_MUTEX_HPP_
@@ -17,10 +17,13 @@ namespace sys
 /**
  * @class Mutex.
  * @brief Mutex class.
+ * 
+ * @tparam A Heap memory allocator class.
  */
-class Mutex : public NonCopyable, public api::Mutex
+template <class A = Allocator>
+class Mutex : public NonCopyable<A>, public api::Mutex
 {
-    typedef NonCopyable Parent;
+    typedef NonCopyable<A> Parent;
 
 public:
 
@@ -28,7 +31,7 @@ public:
      * @brief Constructor.
      */
     Mutex() 
-        : NonCopyable()
+        : NonCopyable<A>()
         , api::Mutex()
         , mutex_()
         , id_(-1) {
@@ -134,6 +137,10 @@ public:
         }
         return res;
     }
+
+protected:
+
+    using Parent::setConstructed;
 
 private:
 
