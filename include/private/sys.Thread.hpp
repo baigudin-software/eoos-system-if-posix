@@ -21,7 +21,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class Thread : public NonCopyable<A>, public api::Thread
 {
     typedef NonCopyable<A> Parent;

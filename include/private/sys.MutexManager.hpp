@@ -8,6 +8,7 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.MutexManager.hpp"
+#include "sys.MutexAllocator.hpp"
 #include "sys.Mutex.hpp"
 #include "lib.UniquePointer.hpp"
 
@@ -22,7 +23,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class MutexManager : public NonCopyable<A>, public api::MutexManager
 {
     typedef NonCopyable<A> Parent;
@@ -61,7 +62,7 @@ public:
         api::Mutex* ptr( NULLPTR );
         if( isConstructed() )
         {
-            lib::UniquePointer< Mutex<A> > mutex( new Mutex<A>() );
+            lib::UniquePointer< Mutex<MutexAllocator> > mutex( new Mutex<MutexAllocator>() );
             if( !mutex.isNull() )
             {
                 bool_t res( false );

@@ -7,7 +7,7 @@
 #define SYS_OBJECT_HPP_
 
 #include "lib.Object.hpp"
-#include "sys.Allocator.hpp"
+#include "sys.NoAllocator.hpp"
 
 namespace eoos
 {
@@ -20,7 +20,7 @@ namespace sys
  *
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class Object : public lib::Object<A>
 {
     typedef lib::Object<A> Parent;

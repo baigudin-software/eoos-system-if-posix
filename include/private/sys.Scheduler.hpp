@@ -8,6 +8,7 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.Scheduler.hpp"
+#include "sys.ThreadAllocator.hpp"
 #include "sys.Thread.hpp"
 #include "lib.UniquePointer.hpp"
 
@@ -22,7 +23,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class Scheduler : public NonCopyable<A>, public api::Scheduler
 {
     typedef NonCopyable<A> Parent;
@@ -61,7 +62,7 @@ public:
         api::Thread* ptr( NULLPTR );
         if( isConstructed() )
         {
-            lib::UniquePointer<api::Thread> res( new Thread<A>(task) );
+            lib::UniquePointer<api::Thread> res( new Thread<ThreadAllocator>(task) );
             if( !res.isNull() )
             {
                 if( !res->isConstructed() )

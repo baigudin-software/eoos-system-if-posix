@@ -19,7 +19,7 @@ namespace sys
  *
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class NonCopyable : public Object<A>
 {
     typedef Object<A> Parent;

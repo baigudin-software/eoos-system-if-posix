@@ -20,7 +20,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class Semaphore : public NonCopyable<A>, public api::Semaphore
 {
     typedef NonCopyable<A> Parent;

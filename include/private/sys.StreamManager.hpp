@@ -21,7 +21,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class StreamManager : public NonCopyable<A>, public api::StreamManager
 {
     typedef NonCopyable<A> Parent;

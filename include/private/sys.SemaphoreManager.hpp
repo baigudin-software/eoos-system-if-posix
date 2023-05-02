@@ -8,6 +8,7 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.SemaphoreManager.hpp"
+#include "sys.SemaphoreAllocator.hpp"
 #include "sys.Semaphore.hpp"
 #include "lib.UniquePointer.hpp"
 
@@ -22,7 +23,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class SemaphoreManager : public NonCopyable<A>, public api::SemaphoreManager
 {
     typedef NonCopyable<A> Parent;
@@ -61,7 +62,7 @@ public:
         api::Semaphore* ptr( NULLPTR );
         if( isConstructed() )
         {
-            lib::UniquePointer<api::Semaphore> res( new Semaphore<A>(permits) );
+            lib::UniquePointer<api::Semaphore> res( new Semaphore<SemaphoreAllocator>(permits) );
             if( !res.isNull() )
             {
                 if( !res->isConstructed() )

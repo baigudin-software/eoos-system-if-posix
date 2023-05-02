@@ -20,7 +20,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class Mutex : public NonCopyable<A>, public api::Mutex
 {
     typedef NonCopyable<A> Parent;

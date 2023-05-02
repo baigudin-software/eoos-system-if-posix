@@ -21,7 +21,7 @@ namespace sys
  * 
  * @tparam A Heap memory allocator class.
  */
-template <class A = Allocator>
+template <class A>
 class OutStream : public NonCopyable<A>, public api::OutStream<char_t>
 {
     typedef NonCopyable<A> Parent;
