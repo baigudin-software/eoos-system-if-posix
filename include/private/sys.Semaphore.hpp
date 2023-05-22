@@ -47,7 +47,7 @@ public:
      */
     virtual ~Semaphore()
     {
-        destruct();
+        deinitialize();
     }
 
     /**
@@ -109,8 +109,7 @@ private:
             {   ///< UT Justified Branch: HW dependency
                 break;
             }
-            int_t const error( ::sem_init(&sem_, 0, static_cast<uint_t >(permits_)) );
-            if(error != 0)
+            if( !initialize() )
             {
                 break;
             }
@@ -119,11 +118,22 @@ private:
         } while(false);
         return res;
     }
-    
+
     /**
-     * @brief Destructs this object.
+     * @brief Initializes kernel semaphore resource.
+     * 
+     * @return True if initialized sucessfully. 
      */
-    void destruct()
+    bool_t initialize()
+    {
+        int_t const error( ::sem_init(&sem_, 0, static_cast<uint_t >(permits_)) );
+        return error == 0;
+    }
+
+    /**
+     * @brief Deinitializes kernel semaphore resource.
+     */
+    void deinitialize()
     {
         static_cast<void>( ::sem_destroy(&sem_) );
     }

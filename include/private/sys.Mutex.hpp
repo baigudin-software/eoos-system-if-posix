@@ -33,8 +33,7 @@ public:
     Mutex() 
         : NonCopyable<A>()
         , api::Mutex()
-        , mutex_()
-        , id_(-1) {
+        , mutex_() {
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }
@@ -44,7 +43,7 @@ public:
      */
     virtual ~Mutex()
     {
-        static_cast<void>( deinitialize() );
+        deinitialize();
     }
 
     /**
@@ -55,14 +54,6 @@ public:
         return Parent::isConstructed();
     }
 
-    /**
-     * @copydoc eoos::api::Resource::getId()
-     */
-    virtual int32_t getId() const
-    {
-        return id_;
-    }    
-    
     /**
      * @copydoc eoos::api::Mutex::tryLock()
      */
@@ -106,38 +97,6 @@ public:
         }
     }
 
-    /**
-     * @brief Initializes kernel mutex resource.
-     * 
-     * @return True if initialized sucessfully. 
-     */
-    bool_t initialize()
-    {
-        bool_t res( false );
-        if( isConstructed() )
-        {
-            int_t const error( ::pthread_mutex_init(&mutex_, NULL) );
-            res = error == 0;
-        }
-        return res;
-    }
-
-    /**
-     * @brief Deinitializes kernel mutex resource.
-     * 
-     * @return True if deinitialized sucessfully. 
-     */
-    bool_t deinitialize()
-    {
-        bool_t res( false );
-        if( isConstructed() )
-        {        
-            int_t const error( ::pthread_mutex_destroy(&mutex_) );
-            res = error == 0;
-        }
-        return res;
-    }
-
 protected:
 
     using Parent::setConstructed;
@@ -158,20 +117,38 @@ private:
             {   ///< UT Justified Branch: HW dependency
                 break;
             }
+            if( !initialize() )
+            {
+                break;
+            }
             res = true;
         } while(false);
         return res;
     }
 
     /**
+     * @brief Initializes kernel mutex resource.
+     * 
+     * @return True if initialized sucessfully. 
+     */
+    bool_t initialize()
+    {
+        int_t const error( ::pthread_mutex_init(&mutex_, NULL) );
+        return error == 0;
+    }
+
+    /**
+     * @brief Deinitializes kernel mutex resource.
+     */
+    void deinitialize()
+    {
+        static_cast<void>( ::pthread_mutex_destroy(&mutex_) );
+    }
+
+    /**
      * @brief Mutex POSIX resource identifier.
      */
     ::pthread_mutex_t mutex_;
-
-    /**
-     * @brief Mutex resource identifier.
-     */
-    int32_t id_;
     
 };
 

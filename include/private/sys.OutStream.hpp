@@ -18,13 +18,10 @@ namespace sys
 /**
  * @class OutStream.
  * @brief OutStream class.
- * 
- * @tparam A Heap memory allocator class.
  */
-template <class A>
-class OutStream : public NonCopyable<A>, public api::OutStream<char_t>
+class OutStream : public NonCopyable<NoAllocator>, public api::OutStream<char_t>
 {
-    typedef NonCopyable<A> Parent;
+    typedef NonCopyable<NoAllocator> Parent;
 
 public:
 
@@ -44,7 +41,7 @@ public:
      * @param type Type output.
      */
     OutStream(Type type) 
-        : NonCopyable<A>()
+        : NonCopyable<NoAllocator>()
         , api::OutStream<char_t>()
         , stream_( NULLPTR ) {
         bool_t const isConstructed( construct(type) );

@@ -8,8 +8,8 @@
 #ifndef SYS_TYPES_HPP_
 #define SYS_TYPES_HPP_
 
-#include "sys.Posix.hpp"
 #include "lib.Types.hpp"
+#include "sys.Posix.hpp" ///< @note Has to be second to avoid NULL definition by POSIX. 
 
 #if EOOS_CPP_STANDARD >= 2011 && defined (EOOS_CPP_NOTHROW)
 #include <new>

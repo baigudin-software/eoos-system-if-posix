@@ -8,13 +8,13 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.System.hpp"
+#include "sys.Heap.hpp"
 #include "sys.Scheduler.hpp"
 #include "sys.MutexManager.hpp"
 #include "sys.SemaphoreManager.hpp"
 #include "sys.StreamManager.hpp"
-#include "sys.Heap.hpp"
+#include "sys.MemoryManager.hpp"
 #include "sys.Error.hpp"
-#include "lib.LinkedList.hpp"
 #include "Program.hpp"
 
 namespace eoos
@@ -38,11 +38,12 @@ public:
     System()
         : NonCopyable<NoAllocator>()
         , api::System()
-        , heap_()    
+        , heap_()
+        , memoryManager_()
         , scheduler_()
-        , mutex_()
-        , semaphore_()    
-        , stream_() {
+        , mutexManager_()
+        , semaphoreManager_()    
+        , streamManager_() {
         bool_t const isConstructed( construct() );
         setConstructed( isConstructed );
     }    
@@ -109,7 +110,7 @@ public:
         {   ///< UT Justified Branch: HW dependency
             exit(ERROR_SYSCALL_CALLED);
         }
-        return mutex_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
+        return mutexManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
     }
 
     /**
@@ -134,7 +135,7 @@ public:
         {   ///< UT Justified Branch: HW dependency
             exit(ERROR_SYSCALL_CALLED);
         }
-        return semaphore_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
+        return semaphoreManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
     }
     
     /**
@@ -159,8 +160,22 @@ public:
         {   ///< UT Justified Branch: HW dependency
             exit(ERROR_SYSCALL_CALLED);
         }
-        return stream_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
+        return streamManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
     }
+
+    /**
+     * @brief Returns the operating system resource memory manager.
+     *
+     * @return A resource memory manager.
+     */
+    MemoryManager& getMemoryManager()
+    {
+        if( !isConstructed() )
+        {   ///< UT Justified Branch: HW dependency
+            exit(ERROR_SYSCALL_CALLED);
+        }
+        return memoryManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
+    }    
 
     /**
      * @brief Executes the operating system.
@@ -190,7 +205,7 @@ public:
      *
      * @return The EOOS system instance.
      */
-    static api::System& getSystem()
+    static System& getSystem()
     {
         if(eoos_ == NULLPTR)
         {   ///< UT Justified Branch: Startup dependency
@@ -222,20 +237,24 @@ private:
             if( !heap_.isConstructed() )
             {   ///< UT Justified Branch: HW dependency
                 break;
-            }                
+            }
+            if( !memoryManager_.isConstructed() )
+            {   ///< UT Justified Branch: HW dependency
+                break;
+            }     
             if( !scheduler_.isConstructed() )
             {   ///< UT Justified Branch: HW dependency
                 break;
             }
-            if( !mutex_.isConstructed() )
+            if( !mutexManager_.isConstructed() )
             {   ///< UT Justified Branch: HW dependency
                 break;
             }
-            if( !semaphore_.isConstructed() )
+            if( !semaphoreManager_.isConstructed() )
             {   ///< UT Justified Branch: HW dependency
                 break;
             }
-            if( !stream_.isConstructed() )
+            if( !streamManager_.isConstructed() )
             {   ///< UT Justified Branch: HW dependency
                 break;
             }        
@@ -254,39 +273,43 @@ private:
     {
         ::exit( static_cast<int_t>(error) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
         // This code must NOT be executed
-        // @todo throw an exection here is better.
         while( true ) {}
     }
 
     /**
      * @brief The operating system.
      */
-    static api::System* eoos_;
+    static System* eoos_;
 
     /**
      * @brief The system heap.
      */
     mutable Heap heap_;
+
+    /**
+     * @brief The system heap.
+     */
+    mutable MemoryManager memoryManager_;
  
     /**
      * @brief The operating system scheduler.
      */
-    mutable Scheduler<NoAllocator> scheduler_;
+    mutable Scheduler scheduler_;
 
     /**
      * @brief The mutex sub-system manager.
      */
-    mutable MutexManager<NoAllocator> mutex_;
+    mutable MutexManager mutexManager_;
 
     /**
      * @brief The semaphore sub-system manager.
      */
-    mutable SemaphoreManager<NoAllocator> semaphore_;
+    mutable SemaphoreManager semaphoreManager_;
     
     /**
      * @brief The stream sub-system manager.
      */
-    mutable StreamManager<NoAllocator> stream_;
+    mutable StreamManager streamManager_;
 
 };
 

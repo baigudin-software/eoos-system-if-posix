@@ -20,13 +20,10 @@ namespace sys
 /**
  * @class Scheduler
  * @brief Thread tasks scheduler class.
- * 
- * @tparam A Heap memory allocator class.
  */
-template <class A>
-class Scheduler : public NonCopyable<A>, public api::Scheduler
+class Scheduler : public NonCopyable<NoAllocator>, public api::Scheduler
 {
-    typedef NonCopyable<A> Parent;
+    typedef NonCopyable<NoAllocator> Parent;
 
 public:
 
@@ -34,7 +31,7 @@ public:
      * @brief Constructor.
      */
     Scheduler()
-        : NonCopyable<A>()
+        : NonCopyable<NoAllocator>()
         , api::Scheduler() {
     }
 

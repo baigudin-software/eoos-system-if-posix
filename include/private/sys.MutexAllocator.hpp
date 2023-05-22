@@ -6,8 +6,7 @@
 #ifndef SYS_MUTEXALLOCATOR_HPP_
 #define SYS_MUTEXALLOCATOR_HPP_
 
-#include "sys.Mutex.hpp"
-#include "lib.Allocator.hpp"
+#include "sys.Types.hpp"
 
 namespace eoos
 {
@@ -18,31 +17,22 @@ namespace sys
  * @class MutexAllocator
  * @brief Mutex memory allocator.
  */ 
-class MutexAllocator : public lib::Allocator
+class MutexAllocator
 {
 
 public:
-
-    #ifdef EOOS_GLOBAL_ENABLE_NO_HEAP
 
     /**
      * @brief Allocate memory for mutex.
      *
      * @return The null pointer.
      */
-    static void* allocate(size_t size)
-    {
-        return NULLPTR;
-    }
+    static void* allocate(size_t size);
 
     /**
      * @brief Frees allocated memory of Mutex.
      */
-    static void free(void* ptr)
-    {
-    }
-
-    #endif // EOOS_GLOBAL_ENABLE_NO_HEAP
+    static void free(void* ptr);
 
 };
 

@@ -6,8 +6,7 @@
 #ifndef SYS_THREADALLOCATOR_HPP_
 #define SYS_THREADALLOCATOR_HPP_
 
-#include "sys.Thread.hpp"
-#include "lib.Allocator.hpp"
+#include "sys.Types.hpp"
 
 namespace eoos
 {
@@ -18,10 +17,22 @@ namespace sys
  * @class ThreadAllocator
  * @brief Thread memory allocator.
  */ 
-class ThreadAllocator : public lib::Allocator
+class ThreadAllocator
 {
 
 public:
+
+    /**
+     * @brief Allocate memory for thread.
+     *
+     * @return The null pointer.
+     */
+    static void* allocate(size_t size);
+
+    /**
+     * @brief Frees allocated memory of thread.
+     */
+    static void free(void* ptr);
 
 };
 
