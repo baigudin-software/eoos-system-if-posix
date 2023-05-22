@@ -10,12 +10,11 @@
 #include "api.System.hpp"
 #include "sys.Heap.hpp"
 #include "sys.Scheduler.hpp"
+#include "sys.MemoryManager.hpp"
 #include "sys.MutexManager.hpp"
 #include "sys.SemaphoreManager.hpp"
 #include "sys.StreamManager.hpp"
-#include "sys.MemoryManager.hpp"
 #include "sys.Error.hpp"
-#include "Program.hpp"
 
 namespace eoos
 {
@@ -35,158 +34,71 @@ public:
     /**
      * @brief Constructor.
      */
-    System()
-        : NonCopyable<NoAllocator>()
-        , api::System()
-        , heap_()
-        , memoryManager_()
-        , scheduler_()
-        , mutexManager_()
-        , semaphoreManager_()    
-        , streamManager_() {
-        bool_t const isConstructed( construct() );
-        setConstructed( isConstructed );
-    }    
+    System();
 
     /**
      * @brief Destructor.
      */
-    virtual ~System()
-    {
-        eoos_ = NULLPTR;
-    }
+    virtual ~System();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
-    {
-        return Parent::isConstructed();
-    }
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::System::getScheduler()
      */
-    virtual api::Scheduler& getScheduler()
-    {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return scheduler_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-    }
+    virtual api::Scheduler& getScheduler();
 
     /**
      * @copydoc eoos::api::System::getHeap()
      */
-    virtual api::Heap& getHeap()
-    {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return heap_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-    }    
+    virtual api::Heap& getHeap();
 
     /**
      * @copydoc eoos::api::System::hasMutexManager()
      */
-    virtual bool_t hasMutexManager()
-    {
-        bool_t res( true );
-        if( !isConstructed() )
-        {
-            res = false;
-        }
-        return res;
-    }
+    virtual bool_t hasMutexManager();
 
     /**
      * @copydoc eoos::api::System::getMutexManager()
      */
-    virtual api::MutexManager& getMutexManager()
-    {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return mutexManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-    }
+    virtual api::MutexManager& getMutexManager();
 
     /**
      * @copydoc eoos::api::System::hasSemaphoreManager()
      */
-    virtual bool_t hasSemaphoreManager()
-    {
-        bool_t res( true );
-        if( !isConstructed() )
-        {
-            res = false;
-        }
-        return res;
-    }
+    virtual bool_t hasSemaphoreManager();
 
     /**
      * @copydoc eoos::api::System::getSemaphoreManager()
      */
-    virtual api::SemaphoreManager& getSemaphoreManager()
-    {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return semaphoreManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-    }
+    virtual api::SemaphoreManager& getSemaphoreManager();
     
     /**
      * @copydoc eoos::api::System::hasStreamManager()
      */
-    virtual bool_t hasStreamManager()
-    {
-        bool_t res( true );
-        if( !isConstructed() )
-        {
-            res = false;
-        }
-        return res;
-    }
+    virtual bool_t hasStreamManager();
 
     /**
      * @copydoc eoos::api::System::getStreamManager()
      */
-    virtual api::StreamManager& getStreamManager()
-    {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return streamManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-    }
+    virtual api::StreamManager& getStreamManager();
 
     /**
      * @brief Returns the operating system resource memory manager.
      *
      * @return A resource memory manager.
      */
-    MemoryManager& getMemoryManager()
-    {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return memoryManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-    }    
+    MemoryManager& getMemoryManager();
 
     /**
      * @brief Executes the operating system.
      *
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute() const
-    {
-        char_t* args[] = {NULLPTR};
-        return execute(0, args); ///< SCA MISRA-C++:2008 Justified Rule 5-2-12
-    }    
+    int32_t execute() const;
     
     /**
      * @brief Executes the operating system.
@@ -195,24 +107,14 @@ public:
      * @param argv An array of c-string of arguments where the last one - argc + 1 is null.
      * @return Zero, or error code if the execution has been terminated.
      */
-    int32_t execute(int32_t argc, char_t* argv[]) const
-    {
-        return Program::start(argc, argv);
-    }
+    int32_t execute(int32_t argc, char_t* argv[]) const;
 
     /**
      * @brief Returns an only one created instance of the EOOS system.
      *
      * @return The EOOS system instance.
      */
-    static System& getSystem()
-    {
-        if(eoos_ == NULLPTR)
-        {   ///< UT Justified Branch: Startup dependency
-            exit(ERROR_SYSCALL_CALLED);
-        }
-        return *eoos_;
-    }
+    static System& getSystem();
 
 private:
 
@@ -221,60 +123,14 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct()
-    {
-        bool_t res( false );
-        do 
-        {
-            if( !isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( eoos_ != NULLPTR )
-            {   ///< UT Justified Branch: Startup dependency
-                break;
-            }
-            if( !heap_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !memoryManager_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }     
-            if( !scheduler_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !mutexManager_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !semaphoreManager_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !streamManager_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }        
-            eoos_ = this;
-            res = true;
-        } while(false);    
-        return res;
-    }
+    bool_t construct();
     
     /**
      * @brief Terminates the system execution.
      *
      * @param Error an exit code.
      */
-    static void exit(Error error)
-    {
-        ::exit( static_cast<int_t>(error) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
-        // This code must NOT be executed
-        while( true ) {}
-    }
+    static void exit(Error error);
 
     /**
      * @brief The operating system.
@@ -285,16 +141,16 @@ private:
      * @brief The system heap.
      */
     mutable Heap heap_;
-
-    /**
-     * @brief The system heap.
-     */
-    mutable MemoryManager memoryManager_;
  
     /**
      * @brief The operating system scheduler.
      */
     mutable Scheduler scheduler_;
+
+    /**
+     * @brief The system heap.
+     */
+    mutable MemoryManager memoryManager_;
 
     /**
      * @brief The mutex sub-system manager.

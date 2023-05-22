@@ -27,17 +27,12 @@ public:
      *
      * @return The null pointer.
      */
-    static void* allocate(size_t)
-    {
-        return NULLPTR;
-    }
+    static void* allocate(size_t);
 
     /**
      * @brief Frees allocated memory.
      */
-    static void free(void*)
-    {
-    }
+    static void free(void*);
 
 };
 

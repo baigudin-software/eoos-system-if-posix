@@ -33,57 +33,38 @@ public:
     /**
      * @brief Constructor.
      */
-    MemoryManager() 
-        : NonCopyable<NoAllocator>()
-        , mutexMemory_() {
-        bool_t const isConstructed( construct() );
-        setConstructed( isConstructed );
-    }
+    MemoryManager();
 
     /**
      * @brief Destructor.
      */
-    virtual ~MemoryManager()
-    {
-    }
+    virtual ~MemoryManager();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
-    {
-        return Parent::isConstructed();
-    }    
+    virtual bool_t isConstructed() const;
 
     /**
      * @brief Return mutex memory.
      * 
      * @return Mutex memory
      */
-    api::Heap& getMutexMemory()
-    {
-        return mutexMemory_;
-    }
+    api::Heap& getMutexMemory();
 
     /**
      * @brief Return semaphore memory.
      * 
      * @return Semaphore memory
      */
-    api::Heap& getSemaphoreMemory()
-    {
-        return semaphoreMemory_;
-    }
+    api::Heap& getSemaphoreMemory();
 
     /**
      * @brief Return thread memory.
      * 
      * @return Thread memory
      */
-    api::Heap& getThreadMemory()
-    {
-        return threadMemory_;
-    }
+    api::Heap& getThreadMemory();
 
 protected:
 
@@ -96,28 +77,8 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct()
-    {
-        bool_t res( false );
-        do 
-        {
-            if( !isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !mutexMemory_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !semaphoreMemory_.isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            res = true;
-        } while(false);    
-        return res;
-    }
-
+    bool_t construct();
+    
     /**
      * @brief Mutex memory allocator.
      */     

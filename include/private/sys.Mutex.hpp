@@ -30,72 +30,32 @@ public:
     /**
      * @brief Constructor.
      */
-    Mutex() 
-        : NonCopyable<A>()
-        , api::Mutex()
-        , mutex_() {
-        bool_t const isConstructed( construct() );
-        setConstructed( isConstructed );
-    }
+    Mutex();
 
     /**
      * @brief Destructor.
      */
-    virtual ~Mutex()
-    {
-        deinitialize();
-    }
+    virtual ~Mutex();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
-    {
-        return Parent::isConstructed();
-    }
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::Mutex::tryLock()
      */
-    virtual bool_t tryLock()
-    {
-        bool_t res( false );
-        if( isConstructed() )
-        {
-            int_t const error( ::pthread_mutex_trylock(&mutex_) );
-            res = (error == 0) ? true : false;
-        }
-        return res;
-    }    
+    virtual bool_t tryLock();
 
     /**
      * @copydoc eoos::api::Mutex::lock()
      */
-    virtual bool_t lock()
-    {
-        bool_t res( false );
-        if( isConstructed() )
-        {
-            int_t const error( ::pthread_mutex_lock(&mutex_) );
-            res = (error == 0) ? true : false;
-        }
-        return res;
-    }
+    virtual bool_t lock();
 
     /**
      * @copydoc eoos::api::Mutex::unlock()
      */
-    virtual void unlock()
-    {
-        if( isConstructed() )
-        {
-            int_t const error( ::pthread_mutex_unlock(&mutex_) );
-            if (error != 0)
-            {   ///< UT Justified Branch: OS dependency
-                setConstructed(false);
-            }
-        }
-    }
+    virtual void unlock();
 
 protected:
 
@@ -108,42 +68,19 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct()
-    {
-        bool_t res( false );
-        do
-        {   
-            if( !isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !initialize() )
-            {
-                break;
-            }
-            res = true;
-        } while(false);
-        return res;
-    }
+    bool_t construct();
 
     /**
      * @brief Initializes kernel mutex resource.
      * 
      * @return True if initialized sucessfully. 
      */
-    bool_t initialize()
-    {
-        int_t const error( ::pthread_mutex_init(&mutex_, NULL) );
-        return error == 0;
-    }
+    bool_t initialize();
 
     /**
      * @brief Deinitializes kernel mutex resource.
      */
-    void deinitialize()
-    {
-        static_cast<void>( ::pthread_mutex_destroy(&mutex_) );
-    }
+    void deinitialize();
 
     /**
      * @brief Mutex POSIX resource identifier.
@@ -151,6 +88,96 @@ private:
     ::pthread_mutex_t mutex_;
     
 };
+
+template <class A>
+Mutex<A>::Mutex()
+    : NonCopyable<A>()
+    , api::Mutex()
+    , mutex_() {
+    bool_t const isConstructed( construct() );
+    setConstructed( isConstructed );
+}
+
+template <class A>
+Mutex<A>::~Mutex()
+{
+    deinitialize();
+}
+
+template <class A>
+bool_t Mutex<A>::isConstructed() const
+{
+    return Parent::isConstructed();
+}
+
+template <class A>
+bool_t Mutex<A>::tryLock()
+{
+    bool_t res( false );
+    if( isConstructed() )
+    {
+        int_t const error( ::pthread_mutex_trylock(&mutex_) );
+        res = (error == 0) ? true : false;
+    }
+    return res;
+}    
+
+template <class A>
+bool_t Mutex<A>::lock()
+{
+    bool_t res( false );
+    if( isConstructed() )
+    {
+        int_t const error( ::pthread_mutex_lock(&mutex_) );
+        res = (error == 0) ? true : false;
+    }
+    return res;
+}
+
+template <class A>
+void Mutex<A>::unlock()
+{
+    if( isConstructed() )
+    {
+        int_t const error( ::pthread_mutex_unlock(&mutex_) );
+        if (error != 0)
+        {   ///< UT Justified Branch: OS dependency
+            setConstructed(false);
+        }
+    }
+}
+
+template <class A>
+bool_t Mutex<A>::construct()
+{
+    bool_t res( false );
+    do
+    {   
+        if( !isConstructed() )
+        {   ///< UT Justified Branch: HW dependency
+            break;
+        }
+        if( !initialize() )
+        {
+            break;
+        }
+        res = true;
+    } while(false);
+    return res;
+}
+
+template <class A>
+bool_t Mutex<A>::initialize()
+{
+    int_t const error( ::pthread_mutex_init(&mutex_, NULL) );
+    return error == 0;
+}
+
+template <class A>
+void Mutex<A>::deinitialize()
+{
+    static_cast<void>( ::pthread_mutex_destroy(&mutex_) );
+}
 
 } // namespace sys
 } // namespace eoos

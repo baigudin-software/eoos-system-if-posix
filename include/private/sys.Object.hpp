@@ -30,30 +30,22 @@ public:
     /**
      * @brief Constructor.
      */
-    Object()
-        : lib::Object<A>() {
-    }
+    Object();
 
     /**
      * @brief Destructor.
      */
-    virtual ~Object() {}
+    virtual ~Object();
     
     /**
      * @copydoc eoos::Object::Object(const Object&)
      */
-    Object(const Object& obj) 
-        : lib::Object<>(obj) {
-    } 
-    
+    Object(const Object& obj);
+
     /**
      * @copydoc eoos::Object::operator=(const Object&)
      */       
-    Object& operator=(const Object& obj)
-    {
-        static_cast<void>( Parent::operator=(obj) );
-        return *this;
-    }    
+    Object& operator=(const Object& obj);
 
     #if EOOS_CPP_STANDARD >= 2011
 
@@ -76,6 +68,28 @@ public:
     #endif // EOOS_CPP_STANDARD >= 2011    
 
 };
+
+template <class A>
+Object<A>::Object()
+    : lib::Object<A>() {
+}
+
+template <class A>
+Object<A>::~Object()
+{
+}
+
+template <class A>
+Object<A>::Object(const Object& obj) 
+    : lib::Object<>(obj) {
+} 
+
+template <class A>
+Object<A>& Object<A>::operator=(const Object& obj)
+{
+    static_cast<void>( Parent::operator=(obj) );
+    return *this;
+}    
 
 } // namespace sys
 } // namespace eoos

@@ -33,71 +33,27 @@ public:
     /**
      * @brief Constructor.
      */
-    ResourceMemory() 
-        : NonCopyable<NoAllocator>()
-        , api::Heap() {
-        bool_t const isConstructed( construct() );
-        setConstructed( isConstructed );
-    }
+    ResourceMemory();
 
     /**
      * @brief Destructor.
      */
-    virtual ~ResourceMemory() 
-    {
-    }
+    virtual ~ResourceMemory();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
-    {
-        return Parent::isConstructed();
-    }    
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::Heap::allocate(size_t,void*)
      */
-    virtual void* allocate(size_t size, void* ptr)
-    {
-        lib::MutexGuard<NoAllocator> guard( mutex_ );
-        if( size != sizeof(T) )
-        {
-            return NULLPTR;
-        }
-        for(int32_t i=0; i<N; i++)
-        {
-            if( isAllocated_[i] == true )
-            {
-                continue;
-            }
-            uint64_t* const memory( memory_[i] );
-            uintptr_t const address( reinterpret_cast<uintptr_t>(memory) );
-            if( ( address & 0x7 ) != 0 )
-            {
-                return NULLPTR;
-            }
-            isAllocated_[i] = true;
-            return memory;
-        }
-        return NULLPTR;
-    }
+    virtual void* allocate(size_t size, void* ptr);
 
     /**
      * @copydoc eoos::api::Heap::free(void*)
      */
-    virtual void free(void* ptr)
-    {
-        lib::MutexGuard<NoAllocator> guard( mutex_ );
-        for(int32_t i=0; i<N; i++)
-        {
-            if( memory_[i] == ptr )
-            {
-                isAllocated_[i] = false;
-                return;
-            }
-        }
-    }
+    virtual void free(void* ptr);
 
 protected:
 
@@ -110,23 +66,7 @@ private:
      *
      * @return True if object has been constructed successfully.
      */
-    bool_t construct()
-    {
-        bool_t res( false );
-        do 
-        {
-            if( !isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            for(int32_t i=0; i<N; i++)
-            {
-                isAllocated_[i] = false;
-            }
-            res = true;
-        } while(false);    
-        return res;
-    }
+    bool_t construct();
 
     /**
      * @brief Resource allocation guard 
@@ -147,6 +87,84 @@ private:
     
 };
 
+template <typename T, int32_t N>
+ResourceMemory<T,N>::ResourceMemory()
+    : NonCopyable<NoAllocator>()
+    , api::Heap() {
+    bool_t const isConstructed( construct() );
+    setConstructed( isConstructed );
+}
+
+template <typename T, int32_t N>
+ResourceMemory<T,N>::~ResourceMemory()
+{
+}
+
+template <typename T, int32_t N>
+bool_t ResourceMemory<T,N>::isConstructed() const
+{
+    return Parent::isConstructed();
+}
+
+template <typename T, int32_t N>
+void* ResourceMemory<T,N>::allocate(size_t size, void* ptr)
+{
+    lib::MutexGuard<NoAllocator> guard( mutex_ );
+    if( size != sizeof(T) )
+    {
+        return NULLPTR;
+    }
+    for(int32_t i=0; i<N; i++)
+    {
+        if( isAllocated_[i] == true )
+        {
+            continue;
+        }
+        uint64_t* const memory( memory_[i] );
+        uintptr_t const address( reinterpret_cast<uintptr_t>(memory) );
+        if( ( address & 0x7 ) != 0 )
+        {
+            return NULLPTR;
+        }
+        isAllocated_[i] = true;
+        return memory;
+    }
+    return NULLPTR;
+}
+
+template <typename T, int32_t N>
+void ResourceMemory<T,N>::free(void* ptr)
+{
+    lib::MutexGuard<NoAllocator> guard( mutex_ );
+    for(int32_t i=0; i<N; i++)
+    {
+        if( memory_[i] == ptr )
+        {
+            isAllocated_[i] = false;
+            return;
+        }
+    }
+}
+
+template <typename T, int32_t N>
+bool_t ResourceMemory<T,N>::construct()
+{
+    bool_t res( false );
+    do 
+    {
+        if( !isConstructed() )
+        {   ///< UT Justified Branch: HW dependency
+            break;
+        }
+        for(int32_t i=0; i<N; i++)
+        {
+            isAllocated_[i] = false;
+        }
+        res = true;
+    } while(false);    
+    return res;
+}
+
 /**
  * @class ResourceMemory<T,0>
  * @brief Heap resource memory allocator.
@@ -162,18 +180,24 @@ public:
     /**
      * @brief Constructor.
      */
-    ResourceMemory() 
-        : Heap() {
-    }
+    ResourceMemory();
 
     /**
      * @brief Destructor.
      */
-    virtual ~ResourceMemory() 
-    {
-    }
+    virtual ~ResourceMemory();
     
 };
+
+template <typename T>
+ResourceMemory<T,0>::ResourceMemory() 
+    : Heap() {
+}
+
+template <typename T>
+ResourceMemory<T,0>::~ResourceMemory()
+{
+}
 
 } // namespace sys
 } // namespace eoos

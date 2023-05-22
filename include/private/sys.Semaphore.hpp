@@ -32,63 +32,27 @@ public:
      *
      * @param permits The initial number of permits available.
      */
-    explicit Semaphore(int32_t permits) 
-        : NonCopyable<A>()
-        , api::Semaphore()
-        , isFair_(false)
-        , permits_(permits)
-        , sem_(){
-        bool_t const isConstructed( construct() );
-        setConstructed( isConstructed );
-    }
+    explicit Semaphore(int32_t permits);
 
     /**
      * @brief Destructor.
      */
-    virtual ~Semaphore()
-    {
-        deinitialize();
-    }
+    virtual ~Semaphore();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
-    {
-        return Parent::isConstructed();
-    }
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::Semaphore::acquire()
      */
-    virtual bool_t acquire()
-    {
-        bool_t res( false );
-        if( isConstructed() )
-        {
-            int_t const error( ::sem_wait(&sem_) );
-            if(error == 0) 
-            { 
-                res = true; 
-            }
-        }
-        return res;
-    }
+    virtual bool_t acquire();
 
     /**
      * @copydoc eoos::api::Semaphore::release()
      */
-    virtual void release()
-    {
-        if( isConstructed() )
-        {
-            bool_t const isPosted( post() );
-            if ( !isPosted )
-            {   ///< UT Justified Branch: OS dependency
-                setConstructed(false);
-            }
-        }
-    }
+    virtual void release();
 
 protected:
 
@@ -101,69 +65,33 @@ private:
      *
      * @return true if object has been constructed successfully.
      */
-    bool_t construct()
-    {
-        bool_t res( false );
-        do {
-            if( !isConstructed() )
-            {   ///< UT Justified Branch: HW dependency
-                break;
-            }
-            if( !initialize() )
-            {
-                break;
-            }
-            isFair_ = isFair();
-            res = true;
-        } while(false);
-        return res;
-    }
+    bool_t construct();
 
     /**
      * @brief Initializes kernel semaphore resource.
      * 
      * @return True if initialized sucessfully. 
      */
-    bool_t initialize()
-    {
-        int_t const error( ::sem_init(&sem_, 0, static_cast<uint_t >(permits_)) );
-        return error == 0;
-    }
+    bool_t initialize();
 
     /**
      * @brief Deinitializes kernel semaphore resource.
      */
-    void deinitialize()
-    {
-        static_cast<void>( ::sem_destroy(&sem_) );
-    }
+    void deinitialize();
 
     /**
      * @brief Test if semaphore is fair.
      *
      * @return Fairness flag.
      */
-    static bool_t isFair()
-    {
-        int_t const priority( ::sched_getscheduler(0) );
-        return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;  ///< SCA MISRA-C++:2008 Justified Rule 16-2-2
-    }
+    static bool_t isFair();
 
     /**
      * @brief Releases one permit.
      *
      * @return True on success.
      */
-    bool_t post()
-    {
-        bool_t res( true );
-        int_t const error( ::sem_post(&sem_) );
-        if (error != 0)
-        {   ///< UT Justified Branch: OS dependency
-            res = false;
-        }
-        return res;
-    }
+    bool_t post();
 
     /**
      * @brief Fairness flag.
@@ -181,6 +109,109 @@ private:
     ::sem_t sem_;    
 
 };
+
+template <class A>
+Semaphore<A>::Semaphore(int32_t permits) 
+    : NonCopyable<A>()
+    , api::Semaphore()
+    , isFair_(false)
+    , permits_(permits)
+    , sem_(){
+    bool_t const isConstructed( construct() );
+    setConstructed( isConstructed );
+}
+
+template <class A>
+Semaphore<A>::~Semaphore()
+{
+    deinitialize();
+}
+
+template <class A>
+bool_t Semaphore<A>::isConstructed() const ///< SCA MISRA-C++:2008 Justified Rule 10-3-1
+{
+    return Parent::isConstructed();
+}
+
+template <class A>
+bool_t Semaphore<A>::acquire()
+{
+    bool_t res( false );
+    if( isConstructed() )
+    {
+        int_t const error( ::sem_wait(&sem_) );
+        if(error == 0) 
+        { 
+            res = true; 
+        }
+    }
+    return res;
+}
+
+template <class A>
+void Semaphore<A>::release()
+{
+    if( isConstructed() )
+    {
+        bool_t const isPosted( post() );
+        if ( !isPosted )
+        {   ///< UT Justified Branch: OS dependency
+            setConstructed(false);
+        }
+    }
+}
+
+template <class A>
+bool_t Semaphore<A>::construct()
+{
+    bool_t res( false );
+    do {
+        if( !isConstructed() )
+        {   ///< UT Justified Branch: HW dependency
+            break;
+        }
+        if( !initialize() )
+        {
+            break;
+        }
+        isFair_ = isFair();
+        res = true;
+    } while(false);
+    return res;
+}
+
+template <class A>
+bool_t Semaphore<A>::initialize()
+{
+    int_t const error( ::sem_init(&sem_, 0, static_cast<uint_t >(permits_)) );
+    return error == 0;
+}
+
+template <class A>
+void Semaphore<A>::deinitialize()
+{
+    static_cast<void>( ::sem_destroy(&sem_) );
+}
+
+
+template <class A>
+bool_t Semaphore<A>::isFair()
+{
+    int_t const priority( ::sched_getscheduler(0) );
+    return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;  ///< SCA MISRA-C++:2008 Justified Rule 16-2-2
+}
+
+template <class A>
+bool_t Semaphore<A>::post()
+{
+    bool_t res( true );
+    int_t const error( ::sem_post(&sem_) );
+    if (error != 0)
+    {   ///< UT Justified Branch: OS dependency
+        res = false;
+    }
+    return res;
+}
         
 } // namespace sys
 } // namespace eoos

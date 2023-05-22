@@ -8,9 +8,6 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.SemaphoreManager.hpp"
-#include "sys.SemaphoreAllocator.hpp"
-#include "sys.Semaphore.hpp"
-#include "lib.UniquePointer.hpp"
 
 namespace eoos
 {
@@ -30,58 +27,27 @@ public:
     /**
      * @brief Constructor.
      */
-    SemaphoreManager() 
-        : NonCopyable<NoAllocator>()
-        , api::SemaphoreManager() {
-        setConstructed( true );
-    }
+    SemaphoreManager();
 
     /**
      * @brief Destructor.
      */
-    virtual ~SemaphoreManager()
-    {
-    }
+    virtual ~SemaphoreManager();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
-    {
-        return Parent::isConstructed();
-    }    
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::SemaphoreManager::create()
      */
-    virtual api::Semaphore* create(int32_t permits)
-    {
-        api::Semaphore* ptr( NULLPTR );
-        if( isConstructed() )
-        {
-            lib::UniquePointer<api::Semaphore> res( new Semaphore<SemaphoreAllocator>(permits) );
-            if( !res.isNull() )
-            {
-                if( !res->isConstructed() )
-                {
-                    res.reset();
-                }
-            }
-            ptr = res.release();
-        }    
-        return ptr;
-    }
+    virtual api::Semaphore* create(int32_t permits);
 
     /**
      * @copydoc eoos::api::SemaphoreManager::remove()
      */
-    virtual void remove(api::Semaphore* semaphore)
-    {
-        if( isConstructed() && semaphore != NULLPTR )
-        {
-            delete semaphore;
-        }
-    }
+    virtual void remove(api::Semaphore* semaphore);
 
 protected:
 

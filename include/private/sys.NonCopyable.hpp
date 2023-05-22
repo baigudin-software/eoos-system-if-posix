@@ -22,21 +22,18 @@ namespace sys
 template <class A>
 class NonCopyable : public Object<A>
 {
-    typedef Object<A> Parent;
 
 public:
 
     /**
      * @brief Constructor.
      */
-    NonCopyable() 
-        : Object<A>() {
-    }
+    NonCopyable();
 
     /**
      * @brief Destructor.
      */
-    virtual ~NonCopyable() {}
+    virtual ~NonCopyable();
     
 private:
     
@@ -65,6 +62,16 @@ private:
     #endif // EOOS_CPP_STANDARD >= 2011
 
 };
+
+template <class A>
+NonCopyable<A>::NonCopyable() 
+    : Object<A>() {
+}
+
+template <class A>
+NonCopyable<A>::~NonCopyable()
+{
+}
 
 } // namespace sys
 } // namespace eoos

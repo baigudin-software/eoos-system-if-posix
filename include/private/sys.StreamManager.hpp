@@ -28,46 +28,27 @@ public:
     /**
      * @brief Constructor.
      */
-    StreamManager() 
-        : NonCopyable<NoAllocator>()
-        , api::StreamManager() 
-        , cout_(OutStream::TYPE_COUT) 
-        , cerr_(OutStream::TYPE_CERR) {
-        setConstructed( true );
-    }
+    StreamManager();
 
     /**
      * @brief Destructor.
      */
-    virtual ~StreamManager()
-    {
-        cout_.flush();
-        cerr_.flush();        
-    }
+    virtual ~StreamManager();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
-    {
-        return Parent::isConstructed();
-    }
+    virtual bool_t isConstructed() const;
     
     /**
      * @copydoc eoos::api::StreamManager::getCout()
      */    
-    virtual api::OutStream<char_t>& getCout()
-    {
-        return cout_;
-    }
+    virtual api::OutStream<char_t>& getCout();
     
     /**
      * @copydoc eoos::api::StreamManager::getCerr()
      */
-    virtual api::OutStream<char_t>& getCerr()
-    {
-        return cerr_;
-    }    
+    virtual api::OutStream<char_t>& getCerr();
 
 protected:
 

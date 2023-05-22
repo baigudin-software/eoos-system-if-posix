@@ -8,9 +8,6 @@
 
 #include "sys.NonCopyable.hpp"
 #include "api.MutexManager.hpp"
-#include "sys.MutexAllocator.hpp"
-#include "sys.Mutex.hpp"
-#include "lib.UniquePointer.hpp"
 
 namespace eoos
 {
@@ -30,58 +27,27 @@ public:
     /**
      * @brief Constructor.
      */
-    MutexManager() 
-        : NonCopyable<NoAllocator>()
-        , api::MutexManager() {
-        setConstructed( true );
-    }
+    MutexManager();
 
     /**
      * @brief Destructor.
      */
-    virtual ~MutexManager()
-    {
-    }
+    virtual ~MutexManager();
 
     /**
      * @copydoc eoos::api::Object::isConstructed()
      */
-    virtual bool_t isConstructed() const
-    {
-        return Parent::isConstructed();
-    }    
+    virtual bool_t isConstructed() const;
 
     /**
      * @copydoc eoos::api::MutexManager::create()
      */
-    virtual api::Mutex* create()
-    {
-        api::Mutex* ptr( NULLPTR );
-        if( isConstructed() )
-        {
-            lib::UniquePointer<api::Mutex> res( new Mutex<MutexAllocator>() );
-            if( !res.isNull() )
-            {
-                if( !res->isConstructed() )
-                {
-                    res.reset();
-                }
-            }
-            ptr = res.release();
-        }    
-        return ptr;
-    }
+    virtual api::Mutex* create();
 
     /**
      * @copydoc eoos::api::MutexManager::remove()
      */
-    virtual void remove(api::Mutex* mutex)
-    {
-        if( isConstructed() && mutex != NULLPTR )
-        {
-            delete mutex;
-        }
-    }
+    virtual void remove(api::Mutex* mutex);
 
 protected:
 
