@@ -140,32 +140,32 @@ private:
     /**
      * @brief The system heap.
      */
-    mutable Heap heap_;
+    Heap heap_;
  
     /**
      * @brief The operating system scheduler.
      */
-    mutable Scheduler scheduler_;
+    Scheduler scheduler_;
 
     /**
      * @brief The system heap.
      */
-    mutable MemoryManager memoryManager_;
+    MemoryManager memoryManager_;
 
     /**
      * @brief The mutex sub-system manager.
      */
-    mutable MutexManager mutexManager_;
+    MutexManager mutexManager_;
 
     /**
      * @brief The semaphore sub-system manager.
      */
-    mutable SemaphoreManager semaphoreManager_;
+    SemaphoreManager semaphoreManager_;
     
     /**
      * @brief The stream sub-system manager.
      */
-    mutable StreamManager streamManager_;
+    StreamManager streamManager_;
 
 };
 

@@ -1,7 +1,7 @@
 /**
  * @file      sys.Call.cpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2023, Sergey Baigudin, Baigudin Software
  */
 #include "sys.Call.hpp"
 #include "sys.System.hpp"

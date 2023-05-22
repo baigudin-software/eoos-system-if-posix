@@ -1,7 +1,7 @@
 /**
  * @file      sys.Call.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2014-2021, Sergey Baigudin, Baigudin Software
+ * @copyright 2014-2023, Sergey Baigudin, Baigudin Software
  */
 #ifndef SYS_CALL_HPP_
 #define SYS_CALL_HPP_

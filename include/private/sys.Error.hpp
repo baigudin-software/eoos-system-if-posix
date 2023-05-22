@@ -1,7 +1,7 @@
 /**
  * @file      sys.Error.hpp
  * @author    Sergey Baigudin, sergey@baigudin.software
- * @copyright 2017-2022, Sergey Baigudin
+ * @copyright 2017-2023, Sergey Baigudin
  */
 #ifndef SYS_ERROR_HPP_
 #define SYS_ERROR_HPP_
