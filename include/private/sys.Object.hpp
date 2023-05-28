@@ -52,18 +52,12 @@ public:
     /**
      * @copydoc eoos::Object::Object(const Object&&)
      */       
-    Object(Object&& obj) 
-        : lib::Object<>( lib::move(obj) ) {
-    }
+    Object(Object&& obj) noexcept;
     
     /**
      * @copydoc eoos::Object::operator=(const Object&&)
      */
-    Object& operator=(Object&& obj)
-    {
-        Parent::operator=( lib::move(obj) );
-        return *this;
-    }
+    Object& operator=(Object&& obj) & noexcept;
     
     #endif // EOOS_CPP_STANDARD >= 2011    
 
@@ -81,7 +75,7 @@ Object<A>::~Object()
 
 template <class A>
 Object<A>::Object(const Object& obj) 
-    : lib::Object<>(obj) {
+    : lib::Object<A>(obj) {
 } 
 
 template <class A>
@@ -89,7 +83,24 @@ Object<A>& Object<A>::operator=(const Object& obj)
 {
     static_cast<void>( Parent::operator=(obj) );
     return *this;
-}    
+}
+
+#if EOOS_CPP_STANDARD >= 2011
+
+template <class A>
+Object<A>::Object(Object&& obj) noexcept
+    : lib::Object<A>( lib::move(obj) ) {
+}
+
+template <class A>
+Object<A>& Object<A>::operator=(Object&& obj) & noexcept
+{
+    Parent::operator=( lib::move(obj) );
+    return *this;
+}
+    
+#endif // EOOS_CPP_STANDARD >= 2011    
+
 
 } // namespace sys
 } // namespace eoos
