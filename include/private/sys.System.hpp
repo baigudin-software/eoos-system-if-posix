@@ -10,7 +10,6 @@
 #include "api.System.hpp"
 #include "sys.Heap.hpp"
 #include "sys.Scheduler.hpp"
-#include "sys.MemoryManager.hpp"
 #include "sys.MutexManager.hpp"
 #include "sys.SemaphoreManager.hpp"
 #include "sys.StreamManager.hpp"
@@ -57,19 +56,9 @@ public:
     virtual api::Heap& getHeap();
 
     /**
-     * @copydoc eoos::api::System::hasMutexManager()
-     */
-    virtual bool_t hasMutexManager();
-
-    /**
      * @copydoc eoos::api::System::getMutexManager()
      */
     virtual api::MutexManager& getMutexManager();
-
-    /**
-     * @copydoc eoos::api::System::hasSemaphoreManager()
-     */
-    virtual bool_t hasSemaphoreManager();
 
     /**
      * @copydoc eoos::api::System::getSemaphoreManager()
@@ -77,29 +66,10 @@ public:
     virtual api::SemaphoreManager& getSemaphoreManager();
     
     /**
-     * @copydoc eoos::api::System::hasStreamManager()
-     */
-    virtual bool_t hasStreamManager();
-
-    /**
      * @copydoc eoos::api::System::getStreamManager()
      */
     virtual api::StreamManager& getStreamManager();
 
-    /**
-     * @brief Returns the operating system resource memory manager.
-     *
-     * @return A resource memory manager.
-     */
-    MemoryManager& getMemoryManager();
-
-    /**
-     * @brief Executes the operating system.
-     *
-     * @return Zero, or error code if the execution has been terminated.
-     */
-    int32_t execute() const;
-    
     /**
      * @brief Executes the operating system.
      *
@@ -124,7 +94,7 @@ private:
      * @return True if object has been constructed successfully.
      */
     bool_t construct();
-    
+
     /**
      * @brief Terminates the system execution.
      *
@@ -146,11 +116,6 @@ private:
      * @brief The operating system scheduler.
      */
     Scheduler scheduler_;
-
-    /**
-     * @brief The system heap.
-     */
-    MemoryManager memoryManager_;
 
     /**
      * @brief The mutex sub-system manager.

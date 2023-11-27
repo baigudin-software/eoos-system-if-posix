@@ -4,8 +4,6 @@
  * @copyright 2017-2023, Sergey Baigudin, Baigudin Software
  */
 #include "sys.Scheduler.hpp"
-#include "sys.ThreadAllocator.hpp"
-#include "sys.Thread.hpp"
 #include "lib.UniquePointer.hpp"
 
 namespace eoos
@@ -13,13 +11,19 @@ namespace eoos
 namespace sys
 {
 
+api::Heap* Scheduler::resource_( NULLPTR );
+
 Scheduler::Scheduler()
     : NonCopyable<NoAllocator>()
-    , api::Scheduler() {
+    , api::Scheduler()
+    , pool_() {
+    bool_t const isConstructed( construct() );
+    setConstructed( isConstructed );    
 }
 
 Scheduler::~Scheduler()
 {
+    Scheduler::deinitialize();
 }
 
 bool_t Scheduler::isConstructed() const
@@ -32,7 +36,7 @@ api::Thread* Scheduler::createThread(api::Task& task)
     api::Thread* ptr( NULLPTR );
     if( isConstructed() )
     {
-        lib::UniquePointer<api::Thread> res( new Thread<ThreadAllocator>(task) );
+        lib::UniquePointer<api::Thread> res( new Resource(task) );
         if( !res.isNull() )
         {
             if( !res->isConstructed() )
@@ -70,6 +74,28 @@ void Scheduler::yield()
     }
 }
 
+bool_t Scheduler::construct()
+{
+    bool_t res( false );
+    do 
+    {
+        if( !isConstructed() )
+        {
+            break;
+        }
+        if( !pool_.memory.isConstructed() )
+        {
+            break;
+        }
+        if( !Scheduler::initialize(&pool_.memory) )
+        {
+            break;
+        }
+        res = true;
+    } while(false);
+    return res;
+}
+
 void Scheduler::sSleep(int32_t const s)
 {
     uint_t sec( static_cast<uint_t>(s) );
@@ -92,6 +118,50 @@ bool_t Scheduler::msSleep(int32_t const ms)
         }
     }
     return res;
+}
+
+void* Scheduler::allocate(size_t size)
+{
+    if( resource_ != NULLPTR )
+    {
+        return resource_->allocate(size, NULLPTR);
+    }
+    else
+    {
+        return NULLPTR;
+    }
+}
+
+void Scheduler::free(void* ptr)
+{
+    if( resource_ != NULLPTR )
+    {
+        resource_->free(ptr);
+    }
+}
+
+bool_t Scheduler::initialize(api::Heap* resource)
+{
+    if( resource_ == NULLPTR )
+    {
+        resource_ = resource;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+void Scheduler::deinitialize()
+{
+    resource_ = NULLPTR;
+}
+
+Scheduler::ResourcePool::ResourcePool()
+    : mutex_()
+    , memory( mutex_ ) {
 }
 
 } // namespace sys

@@ -18,7 +18,6 @@ System::System()
     , api::System()
     , heap_()
     , scheduler_()
-    , memoryManager_()    
     , mutexManager_()
     , semaphoreManager_()    
     , streamManager_() {
@@ -54,16 +53,6 @@ api::Heap& System::getHeap()
     return heap_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
-bool_t System::hasMutexManager()
-{
-    bool_t res( true );
-    if( !isConstructed() )
-    {
-        res = false;
-    }
-    return res;
-}
-
 api::MutexManager& System::getMutexManager()
 {
     if( !isConstructed() )
@@ -71,16 +60,6 @@ api::MutexManager& System::getMutexManager()
         exit(ERROR_SYSCALL_CALLED);
     }
     return mutexManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-}
-
-bool_t System::hasSemaphoreManager()
-{
-    bool_t res( true );
-    if( !isConstructed() )
-    {
-        res = false;
-    }
-    return res;
 }
 
 api::SemaphoreManager& System::getSemaphoreManager()
@@ -92,16 +71,6 @@ api::SemaphoreManager& System::getSemaphoreManager()
     return semaphoreManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
-bool_t System::hasStreamManager()
-{
-    bool_t res( true );
-    if( !isConstructed() )
-    {
-        res = false;
-    }
-    return res;
-}
-
 api::StreamManager& System::getStreamManager()
 {
     if( !isConstructed() )
@@ -110,21 +79,6 @@ api::StreamManager& System::getStreamManager()
     }
     return streamManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
-
-MemoryManager& System::getMemoryManager()
-{
-    if( !isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        exit(ERROR_SYSCALL_CALLED);
-    }
-    return memoryManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
-}    
-
-int32_t System::execute() const
-{
-    char_t* args[] = {NULLPTR};
-    return execute(0, args); ///< SCA MISRA-C++:2008 Justified Rule 5-2-12
-}    
 
 int32_t System::execute(int32_t argc, char_t* argv[]) const
 {
@@ -157,10 +111,6 @@ bool_t System::construct()
         {   ///< UT Justified Branch: HW dependency
             break;
         }
-        if( !memoryManager_.isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }     
         if( !scheduler_.isConstructed() )
         {   ///< UT Justified Branch: HW dependency
             break;
