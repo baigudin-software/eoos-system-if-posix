@@ -9,7 +9,7 @@
 #include "sys.NonCopyable.hpp"
 #include "sys.Heap.hpp"
 #include "sys.Mutex.hpp"
-#include "lib.MutexGuard.hpp"
+#include "lib.Guard.hpp"
 
 namespace eoos
 {
@@ -109,7 +109,7 @@ bool_t ResourceMemory<T,N>::isConstructed() const
 template <typename T, int32_t N>
 void* ResourceMemory<T,N>::allocate(size_t size, void* ptr)
 {
-    lib::MutexGuard<NoAllocator> guard( mutex_ );
+    lib::Guard<NoAllocator> guard( mutex_ );
     if( size != sizeof(T) )
     {
         return NULLPTR;
@@ -135,7 +135,7 @@ void* ResourceMemory<T,N>::allocate(size_t size, void* ptr)
 template <typename T, int32_t N>
 void ResourceMemory<T,N>::free(void* ptr)
 {
-    lib::MutexGuard<NoAllocator> guard( mutex_ );
+    lib::Guard<NoAllocator> guard( mutex_ );
     for(int32_t i=0; i<N; i++)
     {
         if( memory_[i] == ptr )

@@ -82,17 +82,17 @@ private:
     /**
      * @brief Mutex memory allocator.
      */     
-    ResourceMemory<Mutex<MutexAllocator>, EOOS_GLOBAL_NUMBER_OF_MUTEXS> mutexMemory_;
+    ResourceMemory<Mutex<MutexAllocator>, EOOS_GLOBAL_SYS_NUMBER_OF_MUTEXS> mutexMemory_;
 
     /**
      * @brief Semaphore memory allocator.
      */     
-    ResourceMemory<Semaphore<SemaphoreAllocator>, EOOS_GLOBAL_NUMBER_OF_SEMAPHORES> semaphoreMemory_;
+    ResourceMemory<Semaphore<SemaphoreAllocator>, EOOS_GLOBAL_SYS_NUMBER_OF_SEMAPHORES> semaphoreMemory_;
 
     /**
      * @brief Thread memory allocator.
      */     
-    ResourceMemory<Thread<ThreadAllocator>, EOOS_GLOBAL_NUMBER_OF_THREADS> threadMemory_;
+    ResourceMemory<Thread<ThreadAllocator>, EOOS_GLOBAL_SYS_NUMBER_OF_THREADS> threadMemory_;
 
 };
 

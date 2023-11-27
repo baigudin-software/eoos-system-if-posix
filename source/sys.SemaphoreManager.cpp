@@ -47,13 +47,5 @@ api::Semaphore* SemaphoreManager::create(int32_t permits)
     return ptr;
 }
 
-void SemaphoreManager::remove(api::Semaphore* semaphore)
-{
-    if( isConstructed() && semaphore != NULLPTR )
-    {
-        delete semaphore;
-    }
-}
-
 } // namespace sys
 } // namespace eoos

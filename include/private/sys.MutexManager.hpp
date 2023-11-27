@@ -44,11 +44,6 @@ public:
      */
     virtual api::Mutex* create();
 
-    /**
-     * @copydoc eoos::api::MutexManager::remove()
-     */
-    virtual void remove(api::Mutex* mutex);
-
 protected:
 
     using Parent::setConstructed;

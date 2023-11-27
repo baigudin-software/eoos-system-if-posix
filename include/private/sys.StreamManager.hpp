@@ -50,6 +50,26 @@ public:
      */
     virtual api::OutStream<char_t>& getCerr();
 
+    /**
+     * @copydoc eoos::api::StreamManager::setCout(api::OutStream<char_t>&)
+     */
+    virtual bool_t setCout(api::OutStream<char_t>& cout);
+
+    /**
+     * @copydoc eoos::api::StreamManager::setCerr(api::OutStream<char_t>&)
+     */
+    virtual bool_t setCerr(api::OutStream<char_t>& cerr);
+
+    /**
+     * @copydoc eoos::api::StreamManager::resetCout()
+     */
+    virtual void resetCout();
+
+    /**
+     * @copydoc eoos::api::StreamManager::resetCerr()
+     */
+    virtual void resetCerr();
+
 protected:
 
     using Parent::setConstructed;
@@ -57,14 +77,25 @@ protected:
 private:
     
     /**
-     * @brief The system output character stream.
+     * @brief The default system output character stream.
      */
-    OutStream cout_;
+    OutStream coutDef_;
+
+    /**
+     * @brief The default system error character stream.
+     */
+    OutStream cerrDef_;
+
+    /**
+     * @brief The system output character stream.
+     */    
+    api::OutStream<char_t>* cout_;
 
     /**
      * @brief The system error character stream.
-     */
-    OutStream cerr_;
+     */    
+    api::OutStream<char_t>* cerr_;
+
 
 };
 

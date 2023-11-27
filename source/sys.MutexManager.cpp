@@ -47,13 +47,5 @@ api::Mutex* MutexManager::create()
     return ptr;
 }
 
-void MutexManager::remove(api::Mutex* mutex)
-{
-    if( isConstructed() && mutex != NULLPTR )
-    {
-        delete mutex;
-    }
-}
-
 } // namespace sys
 } // namespace eoos

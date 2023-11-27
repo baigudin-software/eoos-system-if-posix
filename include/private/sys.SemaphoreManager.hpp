@@ -44,11 +44,6 @@ public:
      */
     virtual api::Semaphore* create(int32_t permits);
 
-    /**
-     * @copydoc eoos::api::SemaphoreManager::remove()
-     */
-    virtual void remove(api::Semaphore* semaphore);
-
 protected:
 
     using Parent::setConstructed;

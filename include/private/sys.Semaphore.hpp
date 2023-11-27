@@ -52,7 +52,7 @@ public:
     /**
      * @copydoc eoos::api::Semaphore::release()
      */
-    virtual void release();
+    virtual bool_t release();
 
 protected:
 
@@ -85,13 +85,6 @@ private:
      * @return Fairness flag.
      */
     static bool_t isFair();
-
-    /**
-     * @brief Releases one permit.
-     *
-     * @return True on success.
-     */
-    bool_t post();
 
     /**
      * @brief Fairness flag.
@@ -140,7 +133,7 @@ bool_t Semaphore<A>::acquire()
     if( isConstructed() )
     {
         int_t const error( ::sem_wait(&sem_) );
-        if(error == 0) 
+        if( error == 0 ) 
         { 
             res = true; 
         }
@@ -149,16 +142,18 @@ bool_t Semaphore<A>::acquire()
 }
 
 template <class A>
-void Semaphore<A>::release()
+bool_t Semaphore<A>::release()
 {
+    bool_t res( true );
     if( isConstructed() )
     {
-        bool_t const isPosted( post() );
-        if ( !isPosted )
-        {   ///< UT Justified Branch: OS dependency
-            setConstructed(false);
+        int_t const error( ::sem_post(&sem_) );
+        if( error != 0 )
+        {
+            res = true; 
         }
     }
+    return res;
 }
 
 template <class A>
@@ -201,18 +196,6 @@ bool_t Semaphore<A>::isFair()
     return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;  ///< SCA MISRA-C++:2008 Justified Rule 16-2-2
 }
 
-template <class A>
-bool_t Semaphore<A>::post()
-{
-    bool_t res( true );
-    int_t const error( ::sem_post(&sem_) );
-    if (error != 0)
-    {   ///< UT Justified Branch: OS dependency
-        res = false;
-    }
-    return res;
-}
-        
 } // namespace sys
 } // namespace eoos
 #endif // SYS_SEMAPHORE_HPP_

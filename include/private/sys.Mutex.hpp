@@ -55,7 +55,7 @@ public:
     /**
      * @copydoc eoos::api::Mutex::unlock()
      */
-    virtual void unlock();
+    virtual bool_t unlock();
 
 protected:
 
@@ -129,22 +129,27 @@ bool_t Mutex<A>::lock()
     if( isConstructed() )
     {
         int_t const error( ::pthread_mutex_lock(&mutex_) );
-        res = (error == 0) ? true : false;
+        if( error == 0 ) 
+        {
+            res = true;
+        }
     }
     return res;
 }
 
 template <class A>
-void Mutex<A>::unlock()
+bool_t Mutex<A>::unlock()
 {
+    bool_t res( false );
     if( isConstructed() )
     {
         int_t const error( ::pthread_mutex_unlock(&mutex_) );
-        if (error != 0)
-        {   ///< UT Justified Branch: OS dependency
-            setConstructed(false);
+        if( error == 0 )
+        {
+            res = true;
         }
     }
+    return res;
 }
 
 template <class A>
