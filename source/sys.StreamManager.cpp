@@ -43,14 +43,24 @@ api::OutStream<char_t>& StreamManager::getCerr()
 
 bool_t StreamManager::setCout(api::OutStream<char_t>& cout)
 {
-    cout_ = &cout;
-    return true;
+    bool_t res( false );
+    if( isConstructed() )
+    {
+        cout_ = &cout;
+        res = true;
+    }
+    return res;
 }
 
 bool_t StreamManager::setCerr(api::OutStream<char_t>& cerr)
 {
-    cerr_ = &cerr;
-    return true;
+    bool_t res( false );
+    if( isConstructed() )
+    {
+        cerr_ = &cerr;
+        res = true;
+    }
+    return res;
 }
 
 void StreamManager::resetCout()

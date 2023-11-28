@@ -99,31 +99,13 @@ bool_t System::construct()
     bool_t res( false );
     do 
     {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( eoos_ != NULLPTR )
-        {   ///< UT Justified Branch: Startup dependency
-            break;
-        }
-        if( !heap_.isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( !scheduler_.isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( !mutexManager_.isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( !semaphoreManager_.isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( !streamManager_.isConstructed() )
+        if( ( !isConstructed() )
+         || ( eoos_ != NULLPTR )
+         || ( !heap_.isConstructed() )
+         || ( !scheduler_.isConstructed() )
+         || ( !mutexManager_.isConstructed() )
+         || ( !semaphoreManager_.isConstructed() )
+         || ( !streamManager_.isConstructed() ) ) 
         {   ///< UT Justified Branch: HW dependency
             break;
         }        
@@ -133,7 +115,7 @@ bool_t System::construct()
     return res;
 }
 
-void System::exit(Error error)
+void System::exit(Error error) ///< UT Justified Branch: HW dependency
 {
     ::exit( static_cast<int_t>(error) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
     // This code must NOT be executed

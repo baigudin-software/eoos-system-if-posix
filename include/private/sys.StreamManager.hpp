@@ -96,7 +96,6 @@ private:
      */    
     api::OutStream<char_t>* cerr_;
 
-
 };
 
 } // namespace sys
