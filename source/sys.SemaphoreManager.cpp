@@ -52,35 +52,27 @@ api::Semaphore* SemaphoreManager::create(int32_t permits)
 bool_t SemaphoreManager::construct()
 {
     bool_t res( false );
-    do 
+    if( isConstructed() )
     {
-        if( !isConstructed() )
+        if( pool_.memory.isConstructed() )
         {
-            break;
+            if( initialize(&pool_.memory) )
+            {
+                res = true;
+            }
         }
-        if( !pool_.memory.isConstructed() )
-        {
-            break;
-        }
-        if( !SemaphoreManager::initialize(&pool_.memory) )
-        {
-            break;
-        }
-        res = true;
-    } while(false);
+    }
     return res;
 }
 
 void* SemaphoreManager::allocate(size_t size)
 {
+    void* addr( NULLPTR );
     if( resource_ != NULLPTR )
     {
-        return resource_->allocate(size, NULLPTR);
+        addr = resource_->allocate(size, NULLPTR);
     }
-    else
-    {
-        return NULLPTR;
-    }
+    return addr;
 }
 
 void SemaphoreManager::free(void* ptr)
@@ -93,15 +85,13 @@ void SemaphoreManager::free(void* ptr)
 
 bool_t SemaphoreManager::initialize(api::Heap* resource)
 {
+    bool_t res( true );
     if( resource_ == NULLPTR )
     {
         resource_ = resource;
-        return true;
+        res = true;
     }
-    else
-    {
-        return false;
-    }
+    return res;
 }
 
 void SemaphoreManager::deinitialize()

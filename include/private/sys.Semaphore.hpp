@@ -144,11 +144,11 @@ bool_t Semaphore<A>::acquire()
 template <class A>
 bool_t Semaphore<A>::release()
 {
-    bool_t res( true );
+    bool_t res( false );
     if( isConstructed() )
     {
         int_t const error( ::sem_post(&sem_) );
-        if( error != 0 )
+        if( error == 0 )
         {
             res = true; 
         }
@@ -160,18 +160,14 @@ template <class A>
 bool_t Semaphore<A>::construct()
 {
     bool_t res( false );
-    do {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( !initialize() )
+    if( isConstructed() )
+    {
+        if( initialize() )
         {
-            break;
+            isFair_ = isFair();
+            res = true;
         }
-        isFair_ = isFair();
-        res = true;
-    } while(false);
+    }
     return res;
 }
 

@@ -7,6 +7,7 @@
 #define SYS_NOALLOCATOR_HPP_
 
 #include "sys.Types.hpp"
+#include "lib.NoAllocator.hpp"
 
 namespace eoos
 {
@@ -17,24 +18,7 @@ namespace sys
  * @class NoAllocator
  * @brief No memory allocator.
  */ 
-class NoAllocator
-{
-
-public:
-
-    /**
-     * @brief Does not allocate memory.
-     *
-     * @return The null pointer.
-     */
-    static void* allocate(size_t);
-
-    /**
-     * @brief Frees allocated memory.
-     */
-    static void free(void*);
-
-};
+class NoAllocator : public lib::NoAllocator {};
 
 } // namespace sys
 } // namespace eoos

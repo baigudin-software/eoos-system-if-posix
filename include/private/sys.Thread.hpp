@@ -165,34 +165,25 @@ template <class A>
 bool_t Thread<A>::execute()
 {
     bool_t res( false );
-    do{
-        if( !isConstructed() )
-        {
-            break;
-        }
-        if( status_ != STATUS_NEW )
-        {
-            break;
-        }
+    if( isConstructed() && (status_ == STATUS_NEW) )
+    {
         int_t error( 0 );
         PthreadAttr pthreadAttr; ///< SCA MISRA-C++:2008 Justified Rule 9-5-1
         size_t const stackSize( task_->getStackSize() );
         if(stackSize != 0U)
         {
             error = ::pthread_attr_setstacksize(&pthreadAttr.attr, stackSize);
-            if(error != 0)
-            {   ///< UT Justified Branch: OS dependency
-                break;
+        }
+        if(error == 0)
+        {
+            error = ::pthread_create(&thread_, &pthreadAttr.attr, &start, &task_);
+            if(error == 0)
+            {            
+                status_ = STATUS_RUNNABLE;
+                res = true;
             }
         }
-        error = ::pthread_create(&thread_, &pthreadAttr.attr, &start, &task_);
-        if(error != 0)
-        {   ///< UT Justified Branch: OS dependency
-            break;
-        }
-        status_ = STATUS_RUNNABLE;
-        res = true;
-    } while(false);
+    }
     return res;        
 }
 
@@ -244,24 +235,12 @@ template <class A>
 bool_t Thread<A>::construct()
 {  
     bool_t res( false );
-    do
+    if( isConstructed() && Parent::isConstructed(task_) )
     {
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( task_ == NULLPTR )
-        {   ///< UT Justified Branch: SW dependency
-            break;
-        }
-        if( !task_->isConstructed() )
-        {
-            break;
-        }
         status_ = STATUS_NEW;
         res = true;
-    } while(false);
-    if( res == false )
+    }
+    else
     {
         status_ = STATUS_DEAD;
     }
@@ -271,39 +250,31 @@ bool_t Thread<A>::construct()
 template <class A>
 void* Thread<A>::start(void* argument)
 {
-    if(argument == NULLPTR) 
-    {   ///< UT Justified Branch: SW dependency
-        return NULLPTR;
+    if(argument != NULLPTR) 
+    {
+        api::Task* const task( *reinterpret_cast<api::Task**>(argument) ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
+        if( Parent::isConstructed(task) )
+        {
+            int_t oldtype;
+            // The thread is cancelable.  This is the default
+            // cancelability state in all new threads, including the
+            // initial thread.  The thread's cancelability type
+            // determines when a cancelable thread will respond to a
+            // cancellation request.
+            int_t error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
+            if(error == 0)
+            {
+                // The thread can be canceled at any time. Typically, it
+                // will be canceled immediately upon receiving a cancellation
+                // request, but the system doesn't guarantee this.
+                error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
+                if(error == 0)
+                {
+                    task->start();
+                }
+            }
+        }
     }
-    api::Task* const task( *reinterpret_cast<api::Task**>(argument) ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
-    if(task == NULLPTR)
-    {   ///< UT Justified Branch: HW dependency
-        return NULLPTR;
-    }
-    if( !task->isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        return NULLPTR;
-    }        
-    int_t oldtype;
-    // The thread is cancelable.  This is the default
-    // cancelability state in all new threads, including the
-    // initial thread.  The thread's cancelability type
-    // determines when a cancelable thread will respond to a
-    // cancellation request.
-    int_t error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
-    if(error != 0)
-    {   ///< UT Justified Branch: OS dependency
-        return NULLPTR;
-    }
-    // The thread can be canceled at any time. Typically, it
-    // will be canceled immediately upon receiving a cancellation
-    // request, but the system doesn't guarantee this.
-    error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
-    if(error != 0)
-    {   ///< UT Justified Branch: OS dependency
-        return NULLPTR;
-    }
-    task->start();
     return NULLPTR;
 }
 

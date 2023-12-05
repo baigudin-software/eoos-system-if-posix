@@ -62,37 +62,33 @@ bool_t Scheduler::sleep(int32_t ms)
     return res;
 }
 
-void Scheduler::yield()
+bool_t Scheduler::yield()
 {
+    bool_t res( false );
     if( isConstructed() )
     {
         int_t const error( ::sched_yield() );
-        if(error != 0)
-        {   ///< UT Justified Branch: OS dependency
-            setConstructed(false);
+        if(error == 0)
+        {
+            res = true;
         }
     }
+    return res;
 }
 
 bool_t Scheduler::construct()
 {
     bool_t res( false );
-    do 
+    if( isConstructed() )
     {
-        if( !isConstructed() )
+        if( pool_.memory.isConstructed() )
         {
-            break;
+            if( Scheduler::initialize(&pool_.memory) )
+            {
+                res = true;
+            }
         }
-        if( !pool_.memory.isConstructed() )
-        {
-            break;
-        }
-        if( !Scheduler::initialize(&pool_.memory) )
-        {
-            break;
-        }
-        res = true;
-    } while(false);
+    }
     return res;
 }
 
@@ -122,14 +118,12 @@ bool_t Scheduler::msSleep(int32_t const ms)
 
 void* Scheduler::allocate(size_t size)
 {
+    void* addr( NULLPTR );
     if( resource_ != NULLPTR )
     {
-        return resource_->allocate(size, NULLPTR);
+        addr = resource_->allocate(size, NULLPTR);
     }
-    else
-    {
-        return NULLPTR;
-    }
+    return addr;
 }
 
 void Scheduler::free(void* ptr)
@@ -142,16 +136,13 @@ void Scheduler::free(void* ptr)
 
 bool_t Scheduler::initialize(api::Heap* resource)
 {
+    bool_t res( false );
     if( resource_ == NULLPTR )
     {
         resource_ = resource;
-        return true;
+        res = true;
     }
-    else
-    {
-        return false;
-    }
-
+    return res;
 }
 
 void Scheduler::deinitialize()

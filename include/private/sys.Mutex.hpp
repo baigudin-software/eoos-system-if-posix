@@ -156,18 +156,13 @@ template <class A>
 bool_t Mutex<A>::construct()
 {
     bool_t res( false );
-    do
-    {   
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
-        if( !initialize() )
+    if( isConstructed() )
+    {
+        if( initialize() )
         {
-            break;
-        }
-        res = true;
-    } while(false);
+            res = true;
+        }        
+    }
     return res;
 }
 

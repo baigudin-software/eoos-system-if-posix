@@ -96,13 +96,6 @@ private:
     bool_t construct();
 
     /**
-     * @brief Terminates the system execution.
-     *
-     * @param Error an exit code.
-     */
-    static void exit(Error error);
-
-    /**
      * @brief The operating system.
      */
     static System* eoos_;

@@ -56,7 +56,7 @@ public:
     /**
      * @copydoc eoos::api::Scheduler::yield()
      */
-    virtual void yield();
+    virtual bool_t yield();
 
     /**
      * @brief Allocates memory.

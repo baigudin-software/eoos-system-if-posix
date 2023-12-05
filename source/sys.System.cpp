@@ -37,46 +37,26 @@ bool_t System::isConstructed() const
 
 api::Scheduler& System::getScheduler()
 {
-    if( !isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        exit(ERROR_SYSCALL_CALLED);
-    }
     return scheduler_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
 api::Heap& System::getHeap()
 {
-    if( !isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        exit(ERROR_SYSCALL_CALLED);
-    }
     return heap_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
 api::MutexManager& System::getMutexManager()
 {
-    if( !isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        exit(ERROR_SYSCALL_CALLED);
-    }
     return mutexManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
 api::SemaphoreManager& System::getSemaphoreManager()
 {
-    if( !isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        exit(ERROR_SYSCALL_CALLED);
-    }
     return semaphoreManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
 api::StreamManager& System::getStreamManager()
 {
-    if( !isConstructed() )
-    {   ///< UT Justified Branch: HW dependency
-        exit(ERROR_SYSCALL_CALLED);
-    }
     return streamManager_; ///< SCA MISRA-C++:2008 Justified Rule 9-3-2
 }
 
@@ -89,7 +69,7 @@ System& System::getSystem()
 {
     if(eoos_ == NULLPTR)
     {   ///< UT Justified Branch: Startup dependency
-        exit(ERROR_SYSCALL_CALLED);
+        ::exit( static_cast<int_t>(ERROR_SYSCALL_CALLED) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
     }
     return *eoos_;
 }
@@ -97,29 +77,18 @@ System& System::getSystem()
 bool_t System::construct()
 {
     bool_t res( false );
-    do 
+    if( ( isConstructed() )
+     && ( eoos_ == NULLPTR )
+     && ( heap_.isConstructed() )
+     && ( scheduler_.isConstructed() )
+     && ( mutexManager_.isConstructed() )
+     && ( semaphoreManager_.isConstructed() )
+     && ( streamManager_.isConstructed() ) ) 
     {
-        if( ( !isConstructed() )
-         || ( eoos_ != NULLPTR )
-         || ( !heap_.isConstructed() )
-         || ( !scheduler_.isConstructed() )
-         || ( !mutexManager_.isConstructed() )
-         || ( !semaphoreManager_.isConstructed() )
-         || ( !streamManager_.isConstructed() ) ) 
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }        
         eoos_ = this;
         res = true;
-    } while(false);    
+    }        
     return res;
-}
-
-void System::exit(Error error) ///< UT Justified Branch: HW dependency
-{
-    ::exit( static_cast<int_t>(error) ); ///< SCA MISRA-C++:2008 Justified Rule 18-0-3
-    // This code must NOT be executed
-    while( true ) {}
 }
 
 } // namespace sys

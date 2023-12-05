@@ -55,12 +55,8 @@ api::OutStream<char_t>& OutStream::flush()
 bool_t OutStream::construct(Type type)
 {
     bool_t res( false );
-    while(true)
-    {   
-        if( !isConstructed() )
-        {   ///< UT Justified Branch: HW dependency
-            break;
-        }
+    if( isConstructed() )
+    {
         if(type == TYPE_COUT)
         {
             stream_ = ::stdout;
@@ -70,7 +66,6 @@ bool_t OutStream::construct(Type type)
             stream_ = ::stderr;
         }            
         res = true;
-        break;
     }
     return res;
 }
