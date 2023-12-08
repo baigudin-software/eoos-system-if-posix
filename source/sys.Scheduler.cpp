@@ -83,13 +83,74 @@ bool_t Scheduler::construct()
     {
         if( pool_.memory.isConstructed() )
         {
-            if( Scheduler::initialize(&pool_.memory) )
+            if( initialize(&pool_.memory) )
+            {
+                if( setThreadAffinity() )
+                {
+                    if( setThreadPolicy() )
+                    {
+                        res = true;
+                    }
+                }
+            }
+        }
+    }
+    return res;
+}
+
+bool_t Scheduler::setThreadAffinity()
+{
+    #ifdef EOOS_GLOBAL_SYS_SCHEDULER_THREAD_AFFINITY
+    bool_t res( false );
+    cpu_set_t set;
+    CPU_ZERO(&set);
+    uint_t cpu;
+    int_t error( ::getcpu(&cpu, NULL) );
+    if( error == 0 )
+    {
+        CPU_SET(cpu, &set);
+        error = ::sched_setaffinity(0, sizeof(set), &set);
+        if( error == 0 )
+        {
+            int_t const count( CPU_COUNT(&set) );
+            if( count == 1 )
             {
                 res = true;
             }
         }
     }
     return res;
+    #else // !EOOS_GLOBAL_SYS_SCHEDULER_THREAD_AFFINITY
+    return true;
+    #endif // EOOS_GLOBAL_SYS_SCHEDULER_THREAD_AFFINITY
+}
+
+bool_t Scheduler::setThreadPolicy()
+{
+    #ifdef EOOS_GLOBAL_SYS_SCHEDULER_REALTIME
+    const int_t POLICY( SCHED_RR );
+    int_t min( ::sched_get_priority_min(POLICY) );
+    int_t max( ::sched_get_priority_max(POLICY) );
+    bool_t res( false );
+    if( (min != -1) && (max != -1) )
+    {
+        int_t priority( (min + max) / 2 );
+        ::sched_param param = { .sched_priority = priority };
+        int_t pid( ::getpid() );
+        int_t error( ::sched_setscheduler(pid, POLICY, &param) );
+        if( error != -1 ) 
+        {
+            int_t const policy( ::sched_getscheduler(0) );
+            if( policy == POLICY )
+            {
+                res = true;
+            }
+        }
+    }
+    return res;
+    #else // !EOOS_GLOBAL_SYS_SCHEDULER_REALTIME
+    return true;
+    #endif // EOOS_GLOBAL_SYS_SCHEDULER_REALTIME
 }
 
 void Scheduler::sSleep(int32_t const s)

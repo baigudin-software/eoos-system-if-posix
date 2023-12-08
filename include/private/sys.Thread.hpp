@@ -233,7 +233,7 @@ bool_t Thread<A>::setPriority(int32_t priority)
 
 template <class A>
 bool_t Thread<A>::construct()
-{  
+{
     bool_t res( false );
     if( isConstructed() && Parent::isConstructed(task_) )
     {
@@ -252,25 +252,29 @@ void* Thread<A>::start(void* argument)
 {
     if(argument != NULLPTR) 
     {
-        api::Task* const task( *reinterpret_cast<api::Task**>(argument) ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
-        if( Parent::isConstructed(task) )
+        api::Task** addr( reinterpret_cast<api::Task**>(argument) );
+        if( addr != NULLPTR )
         {
-            int_t oldtype;
-            // The thread is cancelable.  This is the default
-            // cancelability state in all new threads, including the
-            // initial thread.  The thread's cancelability type
-            // determines when a cancelable thread will respond to a
-            // cancellation request.
-            int_t error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
-            if(error == 0)
+            api::Task* const task( *addr ); ///< SCA MISRA-C++:2008 Justified Rule 5-2-8
+            if( Parent::isConstructed(task) )
             {
-                // The thread can be canceled at any time. Typically, it
-                // will be canceled immediately upon receiving a cancellation
-                // request, but the system doesn't guarantee this.
-                error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
+                int_t oldtype;
+                // The thread is cancelable.  This is the default
+                // cancelability state in all new threads, including the
+                // initial thread.  The thread's cancelability type
+                // determines when a cancelable thread will respond to a
+                // cancellation request.
+                int_t error( ::pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &oldtype) );
                 if(error == 0)
                 {
-                    task->start();
+                    // The thread can be canceled at any time. Typically, it
+                    // will be canceled immediately upon receiving a cancellation
+                    // request, but the system doesn't guarantee this.
+                    error = ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
+                    if(error == 0)
+                    {
+                        task->start();
+                    }
                 }
             }
         }

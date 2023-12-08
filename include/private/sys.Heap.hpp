@@ -7,6 +7,7 @@
 #define SYS_HEAP_HPP_
 
 #include "api.Heap.hpp"
+#include "sys.Types.hpp"
 
 namespace eoos
 {

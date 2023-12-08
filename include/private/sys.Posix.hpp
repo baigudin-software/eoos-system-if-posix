@@ -15,5 +15,6 @@
 #include <sched.h>
 #include <unistd.h>
 #include <stdio.h> ///< SCA MISRA-C++:2008 Justified Rule 18-0-1 and Rule 27-0-1
+#include <errno.h>
 
 #endif // SYS_POSIX_HPP_

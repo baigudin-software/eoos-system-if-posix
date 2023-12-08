@@ -44,4 +44,18 @@
     #define EOOS_GLOBAL_SYS_NUMBER_OF_THREADS (0)
 #endif
 
+/**
+ * @brief Sets child thread's CPU affinity mask to primary thread CPU..
+ *
+ * @note The definition shall be passed to the project build system through global compile definitions.
+ * #define EOOS_GLOBAL_SYS_SCHEDULER_THREAD_AFFINITY
+ */
+
+/**
+ * @brief Sets thread policy to the round-robin real-time scheduling.
+ *
+ * @note The definition shall be passed to the project build system through global compile definitions.
+ * #define EOOS_GLOBAL_SYS_SCHEDULER_REALTIME
+ */
+
 #endif // SYS_DEFINITIONS_HPP_

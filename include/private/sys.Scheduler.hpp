@@ -80,11 +80,25 @@ protected:
 private:
 
     /**
-     * Constructs this object.
+     * @brief Constructs this object.
      *
      * @return true if object has been constructed successfully.
      */
     bool_t construct();
+
+    /**
+     * @brief Sets child thread's CPU affinity mask to primary thread CPU.
+     * 
+     * @return True if the affinity mask is set.
+     */
+    bool_t setThreadAffinity();
+
+    /**
+     * @brief Sets thread policy to the round-robin real-time scheduling.
+     * 
+     * @return True if the policy is set.
+     */
+    bool_t setThreadPolicy();
 
     /**
      * @brief Causes current thread to sleep in seconds.

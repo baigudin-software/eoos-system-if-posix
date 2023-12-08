@@ -188,8 +188,8 @@ void Semaphore<A>::deinitialize()
 template <class A>
 bool_t Semaphore<A>::isFair()
 {
-    int_t const priority( ::sched_getscheduler(0) );
-    return ( (priority == SCHED_FIFO) || (priority == SCHED_RR) ) ? true : false;  ///< SCA MISRA-C++:2008 Justified Rule 16-2-2
+    int_t const policy( ::sched_getscheduler(0) );
+    return ( (policy == SCHED_FIFO) || (policy == SCHED_RR) ) ? true : false;  ///< SCA MISRA-C++:2008 Justified Rule 16-2-2
 }
 
 } // namespace sys
