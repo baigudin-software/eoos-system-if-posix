@@ -217,7 +217,7 @@ bool_t Thread<A>::setPriority(int32_t priority)
             priority_ = priority;
             res = true;
         }
-        else if (priority == PRIORITY_LOCK)
+        else if (priority == PRIORITY_IDLE)
         {
             priority_ = priority;
             res = true;
